@@ -1,0 +1,1 @@
+docker build --tag yulinfeng/dakala:1.0 .
