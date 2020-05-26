@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的打卡面版</title>
+</head>
+<body>
+<h1>我的打卡面版</h1><hr>
+
+<form action="/delete" method="post">
+    <input type="hidden" name="stuid" value="{{ stuid }}">
+    <button type="submit">删除我的信息</button>
+</form>
+<br/>
+<form action="/daka/{{ stuid }}">
+    <button type="submit">打卡</button>
+</form>
+
+</body>
+</html>
