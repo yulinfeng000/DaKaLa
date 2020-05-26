@@ -16,8 +16,6 @@ COPY ./templates/info.html ./templates/info.html
 COPY ./templates/photo.html ./templates/photo.html
 COPY ./templates/success.html ./templates/success.html
 
-RUN python3 ./get-pip.py
-
 VOLUME /usr/local/dakala/static/
 RUN pip3 install -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 EXPOSE 5000
