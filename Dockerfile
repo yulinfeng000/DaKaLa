@@ -1,4 +1,4 @@
-FROM selenium/standalone-chrome
+FROM elgalu/selenium
 USER root
 RUN mkdir -p /usr/local/dakala
 RUN mkdir -p /usr/local/dakala/templates
