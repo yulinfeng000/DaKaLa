@@ -82,7 +82,7 @@ def dakala(student, config):
 
     # get screenshot
     form_body = driver.find_element_by_tag_name("form")
-    vc_image_path = f'.static/vc_images/{STU_ID}_img.png'
+    vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
     form_body.screenshot(vc_image_path)
     print(os.path.dirname(os.path.abspath(vc_image_path)))
     # close browser window

@@ -8,7 +8,7 @@ from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./static')
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 
 
