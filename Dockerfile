@@ -1,5 +1,5 @@
 FROM selenium/standalone-chrome
-
+USER root
 RUN mkdir -p /usr/local/dakala
 RUN mkdir -p /usr/local/dakala/templates
 RUN mkdir -p /usr/local/dakala/static
