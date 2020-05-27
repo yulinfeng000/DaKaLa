@@ -92,7 +92,7 @@ def daka(stuid):
     return photo(stuid), 200
 
 
-@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=1, minute=1)
+@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=7, minute=1)
 def cycle_daka():
     print("开始执行定时打卡")
     mylist = userdb.find_all_user()
