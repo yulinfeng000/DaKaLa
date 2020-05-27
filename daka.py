@@ -76,9 +76,9 @@ def dakala(student, config):
     questionnaire_submit = driver.find_element_by_name("B2")
     questionnaire_submit.click()
 
-    time.sleep(1)
-    # alert_window = driver.switch_to.alert
-    # alert_window.accept()
+    time.sleep(2)
+    alert_window = driver.switch_to.alert
+    alert_window.accept()
 
     # get screenshot
     form_body = driver.find_element_by_tag_name("form")
