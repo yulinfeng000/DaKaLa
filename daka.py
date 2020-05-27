@@ -42,7 +42,7 @@ def dakala(student, config):
     username_input.send_keys(STU_ID)
     password_input.clear()
     password_input.send_keys(STU_PASSWD)
-    time.sleep(1)
+    time.sleep(3)
     # submit
     login_submit_btn.click()
 
@@ -52,7 +52,7 @@ def dakala(student, config):
             link.click()
             break
 
-    time.sleep(1)
+    time.sleep(3)
     n = driver.window_handles  # 这个时候会生成一个新窗口或新标签页的句柄，代表这个窗口的模拟driver
     print('当前句柄: ', n)  # 会打印所有的句柄
     driver.switch_to.window(n[-1])

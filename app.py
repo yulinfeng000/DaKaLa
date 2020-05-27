@@ -20,7 +20,7 @@ def hello_world():
     if stuid is None:
         return render_template('index.html')
     else:
-        return render_template('info.html',stuid=stuid)
+        return render_template('info.html', stuid=stuid)
 
 
 @app.route("/register", methods=['POST'])
@@ -42,7 +42,7 @@ def register():
     userdb.db_put_user_config(stuid, config)
 
     resp = Response(render_template('success.html'))
-    resp.set_cookie("stuid",stuid)
+    resp.set_cookie("stuid", stuid)
     return resp
 
 
@@ -70,6 +70,13 @@ def daka_worker(stuid):
     student = userdb.db_get_user_by_stuid(stuid)
     config = userdb.db_get_user_config(stuid)
     dakala(student, config)
+
+
+@app.route('/daka/nophoto/<stuid>', methods=['GET'])
+def dakanophoto(stuid):
+    t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
+    t1.start()
+    return "打卡成功", 200
 
 
 @app.route('/daka/<stuid>', methods=['GET'])

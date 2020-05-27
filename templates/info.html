@@ -13,12 +13,17 @@
 </form>
 <br/>
 <form action="/daka/{{ stuid }}">
-    <button type="submit">打卡</button>
+    <button type="submit">有图打卡</button>
+</form>
+
+<form action="/daka/nophoto/{{ stuid }}">
+    <button type="submit">无图打卡</button>
 </form>
 <br/>
 <form action="/photo/{{ stuid }}">
     <button type="submit">查看最新的打卡图</button>
 </form>
+
 
 </body>
 </html>
