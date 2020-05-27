@@ -16,6 +16,10 @@
 # Generated files
 .idea/**/contentModel.xml
 
+static/db
+static/vc_images/
+__pycache__
+
 # Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
