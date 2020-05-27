@@ -1,24 +1,32 @@
 import time
 
 from flask import Flask, request, render_template, Response
+import pytz
 import userdb
 from daka import dakala
 import threading
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
+from flask_apscheduler import APScheduler
 
 app = Flask(__name__, static_folder='./static')
+scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
+
+tz = pytz.timezone('Asia/Shanghai')
 
 
 @app.route('/', methods=['GET'])
 def hello_world():
     cok = request.cookies
     stuid = cok.get("stuid")
-
     if stuid is None:
         return render_template('index.html')
+    elif userdb.db_get_user_by_stuid(stuid) is None:
+        resp = Response(render_template('index.html'))
+        resp.delete_cookie("stuid")
+        return resp
     else:
         return render_template('info.html', stuid=stuid)
 
@@ -89,6 +97,18 @@ def daka(stuid):
     return photo(stuid), 200
 
 
+@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=1)
+def cycle_daka():
+    print("开始执行定时打卡")
+    mylist = userdb.find_all_user()
+    for stu in mylist:
+        print(stu)
+        _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
+        _t.start()
+    print("打卡完成")
+
+
 if __name__ == '__main__':
     http_server.listen(5000, "0.0.0.0")
+    scheduler.start()
     IOLoop.instance().start()

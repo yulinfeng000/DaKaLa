@@ -21,5 +21,5 @@ RUN python3 get-pip.py
 
 VOLUME /usr/local/dakala/static/
 RUN pip3 install -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-EXPOSE 5000
+EXPOSE 5000 
 CMD ["python3" , "app.py"]

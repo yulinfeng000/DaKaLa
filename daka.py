@@ -26,7 +26,7 @@ def dakala(student, config):
     # go to login page
     driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
 
-    time.sleep(1)
+    time.sleep(3)
     # find input element
     username_input = driver.find_element_by_id("txtId")
     password_input = driver.find_element_by_id("txtMM")
