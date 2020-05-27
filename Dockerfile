@@ -2,7 +2,6 @@ FROM selenium/standalone-chrome
 USER root
 RUN mkdir -p /usr/local/dakala
 RUN mkdir -p /usr/local/dakala/templates
-RUN mkdir -p /usr/local/dakala/static
 RUN mkdir -p /usr/local/dakala/static/vc_images
 
 WORKDIR /usr/local/dakala
