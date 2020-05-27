@@ -1,0 +1,9 @@
+services:
+  dakala:
+    image: yulinfeng/dakala:1.0
+    container_name: dakala
+    restart: always
+    ports:
+      - 8888:5000
+    volumes:
+      - /usr/local/docker/dakala/data:/usr/local/dakala/static/

@@ -1,7 +1,5 @@
 import time
-
 from flask import Flask, request, render_template, Response
-import pytz
 import userdb
 from daka import dakala
 import threading
@@ -13,8 +11,6 @@ from flask_apscheduler import APScheduler
 app = Flask(__name__, static_folder='./static')
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
-
-tz = pytz.timezone('Asia/Shanghai')
 
 
 @app.route('/', methods=['GET'])
@@ -61,7 +57,7 @@ def del_info():
     if not all(k in values for k in required):
         return 'Missing values', 403
     stuid = values.get('stuid')
-    userdb.delete(stuid)
+    userdb.db_delete_user_info(stuid)
     resp = Response("<h1>delete success</h1>")
     resp.delete_cookie("stuid")
     return resp, 200
@@ -92,17 +88,15 @@ def daka(stuid):
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     t1.start()
     while t1.is_alive():
-        time.sleep(2)
-
+        time.sleep(1)
     return photo(stuid), 200
 
 
-@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=1)
+@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=1, minute=1)
 def cycle_daka():
     print("开始执行定时打卡")
     mylist = userdb.find_all_user()
     for stu in mylist:
-        print(stu)
         _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
         _t.start()
     print("打卡完成")
