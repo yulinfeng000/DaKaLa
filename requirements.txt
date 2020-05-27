@@ -1,10 +1,16 @@
+APScheduler==3.6.3
 click==7.1.2
 Flask==1.1.2
+Flask-APScheduler==1.11.0
 itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 plyvel==1.2.0
+python-dateutil==2.8.1
+pytz==2020.1
 selenium==3.141.0
+six==1.15.0
 tornado==6.0.4
+tzlocal==2.1
 urllib3==1.25.9
 Werkzeug==1.0.1
