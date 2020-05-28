@@ -9,19 +9,19 @@
 <p>每天早上7点服务器会开始批量打卡，请各位留意最新打卡图的序号，保证打卡成功</p>
 <hr/>
 
-<form action="/daka/{{ stuid }}">
+<form action="/daka/{{ stuid }}" method="post">
     <label for="daka_photo">(需要等待较长时间！！！等待时请不要返回或则刷新！！！)</label>
     <button id="daka_photo" type="submit">有图打卡</button>
 </form>
 
 <br/>
 
-<form action="/daka/nophoto/{{ stuid }}">
+<form action="/daka/nophoto/{{ stuid }}" method="post">
     <label for="daka_nophoto">(若想查看最新的打卡图也需等待服务器生成)</label>
     <button id="daka_nophoto" type="submit">无图打卡</button>
 </form>
 <br/>
-<form action="/photo/{{ stuid }}">
+<form action="/photo/{{ stuid }}" method="post">
     <button type="submit">查看最新的打卡图</button>
 </form>
 <br/>

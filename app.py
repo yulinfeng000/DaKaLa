@@ -63,7 +63,7 @@ def del_info():
     return resp, 200
 
 
-@app.route('/photo/<stuid>', methods=['GET'])
+@app.route('/photo/<stuid>', methods=['POST'])
 def photo(stuid):
     vc_path = f'{stuid}_img.png'
     return render_template('photo.html', img_src=vc_path)
@@ -76,14 +76,14 @@ def daka_worker(stuid):
     dakala(student, config)
 
 
-@app.route('/daka/nophoto/<stuid>', methods=['GET'])
+@app.route('/daka/nophoto/<stuid>', methods=['POST'])
 def dakanophoto(stuid):
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     t1.start()
     return "打卡成功", 200
 
 
-@app.route('/daka/<stuid>', methods=['GET'])
+@app.route('/daka/<stuid>', methods=['POST'])
 def daka(stuid):
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     t1.start()

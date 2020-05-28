@@ -2,7 +2,7 @@ import time
 
 from selenium import webdriver
 from selenium.common.exceptions import\
-    NoSuchElementException,NoAlertPresentException,UnexpectedAlertPresentException
+    NoSuchElementException,NoAlertPresentException,UnexpectedAlertPresentException,InvalidSelectorException,InvalidElementStateException
 from selenium.webdriver.support.select import Select
 import os
 
@@ -92,5 +92,6 @@ def dakala(student, config):
         # close browser window
         driver.quit()
         return True
-    except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException:
+    except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
         driver.quit()
+        return False
