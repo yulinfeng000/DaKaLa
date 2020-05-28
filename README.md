@@ -32,10 +32,10 @@
 
 #### 声明 移动端没有实机测试，目前稳定性，适配度未知
 
-<img src="img/andorid/info.png" style="zoom:50%;" />
+<img src="img/andorid/info.png" style="zoom:25%;" />
 
-<img src="img/andorid/dakaphoto.png" style="zoom:50%;" />
+<img src="img/andorid/dakaphoto.png" style="zoom:25%;" />
 
-<img src="img/ios/info.png" style="zoom:50%;" />
+<img src="img/ios/info.png" style="zoom:25%;" />
 
-<img src="img/ios/dakaphoto.png" style="zoom:50%;" />
+<img src="img/ios/dakaphoto.png" style="zoom:25%;" />
