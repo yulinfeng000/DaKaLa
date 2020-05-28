@@ -22,5 +22,20 @@
 ## Docker 部署
 
 1. 前提: docker环境 (包括 docker, docker-compose)
-2. 运行: `sh build.sh` 等待镜像构建完成
-3. 运行: `docker-compose up -d` (可自行修改docker-compose.yml 文件自定义)
+2. 运行： base_image 文件夹下运行base_build.sh脚本 构建基本镜像
+3. 运行: 主文件夹下运行`sh build.sh` 等待镜像构建完成
+4. 运行: `docker-compose up -d` (可自行修改docker-compose.yml 文件自定义)
+  
+## 移动端
+
+基于React Native开发的移动端，代码很难，但基本功能已实现。可自行构建移动端应用
+
+#### 声明 移动端没有实机测试，目前稳定性，适配度未知
+
+<img src="img/andorid/info.png" style="zoom:50%;" />
+
+<img src="img/andorid/dakaphoto.png" style="zoom:50%;" />
+
+<img src="img/ios/info.png" style="zoom:50%;" />
+
+<img src="img/ios/dakaphoto.png" style="zoom:50%;" />
