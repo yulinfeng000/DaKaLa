@@ -1,10 +1,11 @@
-FROM selenium/standalone-chrome
+FROM yulinfeng/dakala-base:1.0
 USER root
 RUN mkdir -p /usr/local/dakala
 RUN mkdir -p /usr/local/dakala/templates
 RUN mkdir -p /usr/local/dakala/static/vc_images
 
 WORKDIR /usr/local/dakala
+
 COPY ./daka.py ./daka.py
 COPY ./app.py ./app.py
 COPY ./userdb.py ./userdb.py
@@ -14,11 +15,7 @@ COPY  ./templates/index.html ./templates/index.html
 COPY ./templates/info.html ./templates/info.html
 COPY ./templates/photo.html ./templates/photo.html
 COPY ./templates/success.html ./templates/success.html
-RUN apt update -y
-RUN apt install python3-distutils -y
-RUN python3 get-pip.py
 
 VOLUME /usr/local/dakala/static/
-RUN pip3 install -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 EXPOSE 5000 
 CMD ["python3" , "app.py"]
