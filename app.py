@@ -27,6 +27,32 @@ def hello_world():
         return render_template('info.html', stuid=stuid)
 
 
+@app.route('/api/register', methods=['POST'])
+def api_register():
+    print("收到注册请求")
+    required = ['stuid', 'password', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
+    values = request.json
+
+    if not all(k in values for k in required):
+        resp = Response('有必要信息微填写')
+        resp.status_code = 403
+        return resp
+    stuid = values.get('stuid')
+    password = values.get('password')
+    config = {
+        'homeStatus': values.get('homeStatus'),
+        'livingStatus': values.get('livingStatus'),
+        'healthStatus': values.get('healthStatus'),
+        'workingPlace': values.get('workingPlace'),
+        'cityStatus': values.get('cityStatus')
+    }
+    userdb.db_put_user_info(stuid, password)
+    userdb.db_put_user_config(stuid, config)
+
+    resp = Response('成功', 200)
+    return resp
+
+
 @app.route("/register", methods=['POST'])
 def register():
     required = ['stuid', 'password', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
@@ -63,6 +89,13 @@ def del_info():
     return resp, 200
 
 
+@app.route('/api/delete/<stuid>', methods=['POST'])
+def api_del_info(stuid):
+    print("删除",stuid)
+    userdb.db_delete_user_info(stuid)
+    return 200
+
+
 @app.route('/photo/<stuid>', methods=['POST'])
 def photo(stuid):
     vc_path = f'{stuid}_img.png'
@@ -78,6 +111,18 @@ def daka_worker(stuid):
 
 @app.route('/daka/nophoto/<stuid>', methods=['POST'])
 def dakanophoto(stuid):
+    t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
+    t1.start()
+    return "打卡成功", 200
+
+
+@app.route('/api/daka/nophoto/<stuid>', methods=['POST'])
+def api_dakanophoto(stuid):
+    """
+    api 接口
+    :param stuid: 学号
+    :return:
+    """
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     t1.start()
     return "打卡成功", 200
