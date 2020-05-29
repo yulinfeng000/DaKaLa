@@ -12,7 +12,8 @@ from concurrent.futures import ThreadPoolExecutor
 app = Flask(__name__, static_folder='./static')
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
-t_pool = ThreadPoolExecutor(2)
+t_pool = ThreadPoolExecutor(2) # 别设置太大，打卡很要求性能，同时执行太多会顶不住
+
 
 @app.route('/', methods=['GET'])
 def hello_world():
@@ -104,16 +105,19 @@ def photo(stuid):
 
 
 def daka_worker(stuid):
-    print("打卡中", stuid)
+    # print("打卡中", stuid)
     student = userdb.db_get_user_by_stuid(stuid)
     config = userdb.db_get_user_config(stuid)
-    dakala(student, config)  # 测试用暂时注解，
+    # time.sleep(11)
+    # print("打卡成功", stuid)
+    dakala(student, config)
 
 
 @app.route('/daka/nophoto/<stuid>', methods=['POST'])
 def dakanophoto(stuid):
-    t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
-    t1.start()
+    t_pool.submit(daka_worker, stuid)
+    # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
+    # t1.start()
     return "打卡成功", 200
 
 
@@ -124,8 +128,9 @@ def api_dakanophoto(stuid):
     :param stuid: 学号
     :return:
     """
-    t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
-    t1.start()
+    # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
+    # t1.start()
+    t_pool.submit(daka_worker, stuid)
     return "打卡成功", 200
 
 
@@ -139,6 +144,7 @@ def daka(stuid):
 
 
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=7, minute=1)
+# @app.route('/admin/daka/all',methods=['GET'])
 def cycle_daka():
     print("开始执行定时打卡")
     mylist = userdb.find_all_user()
@@ -146,7 +152,7 @@ def cycle_daka():
         t_pool.submit(daka_worker, stu['stuid'])
         # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
         # _t.start()
-
+    #  return "daka成公",200
 
 
 if __name__ == '__main__':

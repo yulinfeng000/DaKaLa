@@ -30,7 +30,7 @@
 
 基于React Native开发的移动端，代码很难，但基本功能已实现。可自行构建移动端应用
 
-- mobile 文件夹下分别为移动端源码 和 已经打包好的安卓apk
+- [移动端项目地址](https://github.com/yulinfeng000/DaKaLa-mobile)
 
 #### 声明 移动端没有实机测试，目前稳定性，适配度未知
 

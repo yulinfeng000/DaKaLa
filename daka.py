@@ -8,12 +8,12 @@ import os
 
 
 def dakala(student, config):
-    print(student, config)
+    # print(student, config)
     STU_ID = student['stuid']
     STU_PASSWD = student['password']
 
     if STU_ID == "" and STU_PASSWD == "":
-        print("没有设置教务处用户名和密码")
+        # print("没有设置教务处用户名和密码")
         return False
 
     mobileEmulation = {'deviceName': 'iPhone X'}
@@ -58,7 +58,7 @@ def dakala(student, config):
 
         time.sleep(3)
         n = driver.window_handles  # 这个时候会生成一个新窗口或新标签页的句柄，代表这个窗口的模拟driver
-        print('当前句柄: ', n)  # 会打印所有的句柄
+        # print('当前句柄: ', n)  # 会打印所有的句柄
         driver.switch_to.window(n[-1])
 
         linkList = driver.find_elements_by_tag_name("a")
@@ -88,7 +88,7 @@ def dakala(student, config):
         form_body = driver.find_element_by_tag_name("form")
         vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
         form_body.screenshot(vc_image_path)
-        print(os.path.dirname(os.path.abspath(vc_image_path)))
+        # print(os.path.dirname(os.path.abspath(vc_image_path)))
         # close browser window
         driver.quit()
         return True
