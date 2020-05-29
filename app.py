@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 app = Flask(__name__, static_folder='./static')
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
-
+t_pool = ThreadPoolExecutor(2)
 
 @app.route('/', methods=['GET'])
 def hello_world():
@@ -141,13 +141,12 @@ def daka(stuid):
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=7, minute=1)
 def cycle_daka():
     print("开始执行定时打卡")
-    pool = ThreadPoolExecutor(2)
     mylist = userdb.find_all_user()
     for stu in mylist:
-        pool.submit(daka_worker, stu['stuid'])
+        t_pool.submit(daka_worker, stu['stuid'])
         # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
         # _t.start()
-    return "批量打卡成功", 200
+
 
 
 if __name__ == '__main__':
