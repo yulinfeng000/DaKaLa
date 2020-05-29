@@ -7,6 +7,7 @@ from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from flask_apscheduler import APScheduler
+from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__, static_folder='./static')
 scheduler = APScheduler(app=app)
@@ -91,7 +92,7 @@ def del_info():
 
 @app.route('/api/delete/<stuid>', methods=['POST'])
 def api_del_info(stuid):
-    print("删除",stuid)
+    print("删除", stuid)
     userdb.db_delete_user_info(stuid)
     return 200
 
@@ -106,7 +107,7 @@ def daka_worker(stuid):
     print("打卡中", stuid)
     student = userdb.db_get_user_by_stuid(stuid)
     config = userdb.db_get_user_config(stuid)
-    dakala(student, config)
+    dakala(student, config)  # 测试用暂时注解，
 
 
 @app.route('/daka/nophoto/<stuid>', methods=['POST'])
@@ -138,13 +139,16 @@ def daka(stuid):
 
 
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=7, minute=1)
+@app.route('/admin/daka/all', methods=['GET'])
 def cycle_daka():
     print("开始执行定时打卡")
+    pool = ThreadPoolExecutor(2)
     mylist = userdb.find_all_user()
     for stu in mylist:
-        _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
-        _t.start()
-    print("打卡完成")
+        pool.submit(daka_worker, stu['stuid'])
+        # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
+        # _t.start()
+    return "批量打卡成功", 200
 
 
 if __name__ == '__main__':
