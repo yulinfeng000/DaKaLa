@@ -139,7 +139,6 @@ def daka(stuid):
 
 
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=7, minute=1)
-@app.route('/admin/daka/all', methods=['GET'])
 def cycle_daka():
     print("开始执行定时打卡")
     pool = ThreadPoolExecutor(2)
