@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 app = Flask(__name__, static_folder='./static')
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
-t_pool = ThreadPoolExecutor(2) # 别设置太大，打卡很要求性能，同时执行太多会顶不住
+t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
 
 
 @app.route('/', methods=['GET'])
@@ -95,7 +95,7 @@ def del_info():
 def api_del_info(stuid):
     print("删除", stuid)
     userdb.db_delete_user_info(stuid)
-    return 200
+    return "success", 200
 
 
 @app.route('/photo/<stuid>', methods=['POST'])
