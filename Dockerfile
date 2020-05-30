@@ -3,9 +3,11 @@ USER root
 RUN mkdir -p /usr/local/dakala
 RUN mkdir -p /usr/local/dakala/templates
 RUN mkdir -p /usr/local/dakala/static/vc_images
+RUN mkdir -p /usr/local/dakala/static/log
 
 WORKDIR /usr/local/dakala
 
+COPY ./logsetting.py ./logsetting.py
 COPY ./daka.py ./daka.py
 COPY ./app.py ./app.py
 COPY ./userdb.py ./userdb.py

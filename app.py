@@ -1,3 +1,4 @@
+import logsetting
 import time
 from flask import Flask, request, render_template, Response
 import userdb
@@ -8,6 +9,9 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from flask_apscheduler import APScheduler
 from concurrent.futures import ThreadPoolExecutor
+from tornado.log import gen_log
+import os
+
 
 app = Flask(__name__, static_folder='./static')
 scheduler = APScheduler(app=app)
@@ -31,12 +35,11 @@ def hello_world():
 
 @app.route('/api/register', methods=['POST'])
 def api_register():
-    print("收到注册请求")
     required = ['stuid', 'password', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
     values = request.json
 
     if not all(k in values for k in required):
-        resp = Response('有必要信息微填写')
+        resp = Response('有必要信息未填写')
         resp.status_code = 403
         return resp
     stuid = values.get('stuid')
@@ -52,6 +55,7 @@ def api_register():
     userdb.db_put_user_config(stuid, config)
 
     resp = Response('成功', 200)
+    gen_log.info(f'学号 {stuid} , 移动端注册成功')
     return resp
 
 
@@ -75,6 +79,7 @@ def register():
 
     resp = Response(render_template('success.html'))
     resp.set_cookie("stuid", stuid)
+    gen_log.info(f'学号 {stuid} , 浏览器注册成功')
     return resp
 
 
@@ -86,15 +91,23 @@ def del_info():
         return 'Missing values', 403
     stuid = values.get('stuid')
     userdb.db_delete_user_info(stuid)
+    stu_img_path = os.path.abspath(f'./static/vc_images/{stuid}_img.png')
+    if os.path.exists(stu_img_path):
+        os.remove(stu_img_path)
     resp = Response("<h1>delete success</h1>")
     resp.delete_cookie("stuid")
+    gen_log.warning(f'学号 {stuid} ,通过浏览器删除了自己信息')
     return resp, 200
 
 
 @app.route('/api/delete/<stuid>', methods=['POST'])
 def api_del_info(stuid):
-    print("删除", stuid)
+
     userdb.db_delete_user_info(stuid)
+    stu_img_path = os.path.abspath(f'./static/vc_images/{stuid}_img.png')
+    if os.path.exists(stu_img_path):
+        os.remove(stu_img_path)
+    gen_log.warning(f'学号 {stuid} ,通过移动端删除了自己信息')
     return "success", 200
 
 
@@ -118,6 +131,7 @@ def dakanophoto(stuid):
     t_pool.submit(daka_worker, stuid)
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
+    gen_log.info(f'学号 {stuid},执行了手动打卡')
     return "打卡成功", 200
 
 
@@ -131,11 +145,13 @@ def api_dakanophoto(stuid):
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
     t_pool.submit(daka_worker, stuid)
+    gen_log.info(f'学号 {stuid},执行了手动打卡')
     return "打卡成功", 200
 
 
 @app.route('/daka/<stuid>', methods=['POST'])
 def daka(stuid):
+    gen_log.info(f'学号 {stuid},执行了手动打卡')
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     t1.start()
     while t1.is_alive():
@@ -146,9 +162,10 @@ def daka(stuid):
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=7, minute=1)
 # @app.route('/admin/daka/all',methods=['GET'])
 def cycle_daka():
-    print("开始执行定时打卡")
+    gen_log.info("今日批量打卡开始执行")
     mylist = userdb.find_all_user()
     for stu in mylist:
+        t_pool.submit(daka_worker, stu['stuid'])
         t_pool.submit(daka_worker, stu['stuid'])
         # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
         # _t.start()

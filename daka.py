@@ -1,11 +1,10 @@
 import time
-
 from selenium import webdriver
-from selenium.common.exceptions import\
-    NoSuchElementException,NoAlertPresentException,UnexpectedAlertPresentException,InvalidSelectorException,InvalidElementStateException
+from selenium.common.exceptions import \
+    NoSuchElementException, NoAlertPresentException, UnexpectedAlertPresentException, InvalidSelectorException, \
+    InvalidElementStateException
 from selenium.webdriver.support.select import Select
-import os
-
+from tornado.log import gen_log
 
 def dakala(student, config):
     # print(student, config)
@@ -93,5 +92,6 @@ def dakala(student, config):
         driver.quit()
         return True
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
+        gen_log.warning(f'学号 {STU_ID} , 打卡错误')
         driver.quit()
         return False
