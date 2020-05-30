@@ -1,4 +1,7 @@
-import logsetting
+import random
+import string
+
+import logsetting # 不能删！！
 import time
 from flask import Flask, request, render_template, Response
 import userdb
@@ -11,12 +14,26 @@ from flask_apscheduler import APScheduler
 from concurrent.futures import ThreadPoolExecutor
 from tornado.log import gen_log
 import os
-
+from datetime import timedelta
 
 app = Flask(__name__, static_folder='./static')
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
+
+
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 
 @app.route('/', methods=['GET'])
@@ -102,7 +119,6 @@ def del_info():
 
 @app.route('/api/delete/<stuid>', methods=['POST'])
 def api_del_info(stuid):
-
     userdb.db_delete_user_info(stuid)
     stu_img_path = os.path.abspath(f'./static/vc_images/{stuid}_img.png')
     if os.path.exists(stu_img_path):
@@ -114,7 +130,8 @@ def api_del_info(stuid):
 @app.route('/photo/<stuid>', methods=['POST'])
 def photo(stuid):
     vc_path = f'{stuid}_img.png'
-    return render_template('photo.html', img_src=vc_path)
+    random_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(3))
+    return render_template('photo.html', img_src=vc_path,random=random_str)
 
 
 def daka_worker(stuid):
@@ -173,6 +190,7 @@ def cycle_daka():
 
 
 if __name__ == '__main__':
-    http_server.listen(5000, "0.0.0.0")
     scheduler.start()
+    http_server.listen(5000, "0.0.0.0")
+
     IOLoop.instance().start()
