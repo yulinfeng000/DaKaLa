@@ -116,6 +116,6 @@ def dakala(student, config):
         # return True
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
         gen_log.warning(f'学号 {STU_ID} , 打卡错误')
-        return False
+        # return False
     finally:
         driver.quit()
