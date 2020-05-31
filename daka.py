@@ -99,13 +99,13 @@ def dakala(student, config):
         questionnaire_submit = driver.find_element_by_name("B2")
         questionnaire_submit.click()
 
-        time.sleep(1)
+        # time.sleep(1)
         alert_window = driver.switch_to.alert
         alert_window.accept()
 
         # get screenshot
 
-        time.sleep(1)
+        # time.sleep(1)
 
         form_body = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.TAG_NAME, "form"))
@@ -114,6 +114,7 @@ def dakala(student, config):
         # form_body = driver.find_element_by_tag_name("form")
         vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
         form_body.screenshot(vc_image_path)
+
         # print(os.path.dirname(os.path.abspath(vc_image_path)))
         # close browser window
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
@@ -121,3 +122,5 @@ def dakala(student, config):
     finally:
         driver.close()
         driver.quit()
+        # gen_log.info("打卡退出")
+        return True

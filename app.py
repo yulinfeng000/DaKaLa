@@ -183,7 +183,7 @@ def cycle_daka():
     mylist = userdb.find_all_user()
     for stu in mylist:
         t_pool.submit(daka_worker, stu['stuid'])
-        t_pool.submit(daka_worker, stu['stuid'])
+        # t_pool.submit(daka_worker, stu['stuid'])
         # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
         # _t.start()
     #  return "daka成公",200
