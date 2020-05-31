@@ -28,7 +28,11 @@
   
 ## 移动端
 
-基于React Native开发的移动端，代码很难，但基本功能已实现。可自行构建移动端应用
+<b> 编译好的app在 `mobile-app` 文件夹中，请自取 </b>
+
+- ios 端由于我没有开发者账号，所以需要借助 <b> altsotre </b> 或者  <b> impactor </b> 安装，具体使用请百度
+
+基于React Native开发的移动端，代码很烂，但基本功能已实现。可自行构建移动端应用
 
 - [移动端项目地址](https://github.com/yulinfeng000/DaKaLa-mobile)
 
