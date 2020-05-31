@@ -23,18 +23,18 @@ def dakala(student, config):
     options = webdriver.ChromeOptions()
     options.add_argument('--disable-gpu')  # 谷歌文档提到需要加上这个属性来规避bug
     options.add_argument('headless')
-    options.add_argument('--no-sandbox')
+    # options.add_argument('--no-sandbox')
     options.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片, 提升速度
     options.add_experimental_option('mobileEmulation', mobileEmulation)
     # start chrome and maximize window
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(chrome_options=options)
 
     driver.maximize_window()
 
     # go to login page
     driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
 
-    time.sleep(1)
+    # time.sleep(1)
 
     try:
         # find input element
@@ -50,6 +50,7 @@ def dakala(student, config):
         login_submit_btn = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "IbtnEnter"))
         )
+
         # username_input = driver.find_element_by_id("txtId")
         # password_input = driver.find_element_by_id("txtMM")
         # login_submit_btn = driver.find_element_by_id("IbtnEnter")
@@ -103,19 +104,20 @@ def dakala(student, config):
         alert_window.accept()
 
         # get screenshot
-        # time.sleep(1)
+
+        time.sleep(1)
 
         form_body = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.TAG_NAME, "form"))
         )
+
         # form_body = driver.find_element_by_tag_name("form")
         vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
         form_body.screenshot(vc_image_path)
         # print(os.path.dirname(os.path.abspath(vc_image_path)))
         # close browser window
-        # return True
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
         gen_log.warning(f'学号 {STU_ID} , 打卡错误')
-        # return False
     finally:
+        driver.close()
         driver.quit()
