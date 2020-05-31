@@ -1,7 +1,6 @@
 import random
 import string
-
-import logsetting # 不能删！！
+import logsetting  # 不能删！！
 import time
 from flask import Flask, request, render_template, Response
 import userdb
@@ -34,7 +33,6 @@ def add_header(r):
     r.headers["Expires"] = "0"
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
-
 
 @app.route('/', methods=['GET'])
 def hello_world():
@@ -131,7 +129,7 @@ def api_del_info(stuid):
 def photo(stuid):
     vc_path = f'{stuid}_img.png'
     random_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(3))
-    return render_template('photo.html', img_src=vc_path,random=random_str)
+    return render_template('photo.html', img_src=vc_path, random=random_str)
 
 
 def daka_worker(stuid):

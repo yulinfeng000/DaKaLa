@@ -1,6 +1,7 @@
 version: "3"
 services:
   dakala:
+    init: true
     image: yulinfeng/dakala:1.0
     container_name: dakala
     restart: always
