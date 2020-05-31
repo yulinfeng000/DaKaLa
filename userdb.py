@@ -5,6 +5,7 @@ import plyvel
 DB_LOCATION = "./static/db"
 STUDENT_TABLE = "STUDENT_"
 STUDENT_CONFIG_TABLE = "CONFIG_TABLE_"
+DAKA_CALLBACK_INFO = "DAKA_CALLBACK_INFO_"
 
 db = plyvel.DB(DB_LOCATION, create_if_missing=True)
 
@@ -65,6 +66,14 @@ def db_get_user_config(stuid):
 def db_delete_user_info(stuid):
     delete(f'{STUDENT_TABLE}{stuid}')
     delete(f'{STUDENT_CONFIG_TABLE}{stuid}')
+
+
+def db_put_dk_callback_info(stuid, info):
+    put_value(f'{DAKA_CALLBACK_INFO}{stuid}', info)
+
+
+def db_get_dk_callback_info(stuid):
+    return get_value(f'{DAKA_CALLBACK_INFO}{stuid}')
 
 
 def find_all_user():

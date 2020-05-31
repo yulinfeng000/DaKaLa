@@ -34,6 +34,7 @@ def add_header(r):
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
 
+
 @app.route('/', methods=['GET'])
 def hello_world():
     cok = request.cookies
@@ -45,7 +46,10 @@ def hello_world():
         resp.delete_cookie("stuid")
         return resp
     else:
-        return render_template('info.html', stuid=stuid)
+        ck_info = userdb.db_get_dk_callback_info(stuid)
+        if ck_info is None:
+            ck_info = "还没在服务器上打过卡呢"
+        return render_template('info.html', stuid=stuid, callback=ck_info)
 
 
 @app.route('/api/register', methods=['POST'])
@@ -72,6 +76,14 @@ def api_register():
     resp = Response('成功', 200)
     gen_log.info(f'学号 {stuid} , 移动端注册成功')
     return resp
+
+
+@app.route('/api/ck/<stuid>', methods=['POST'])
+def api_get_ck_info(stuid):
+    ck_info = userdb.db_get_dk_callback_info(stuid)
+    if ck_info is None:
+        ck_info = "还没在服务器上打过卡呢"
+    return ck_info,200
 
 
 @app.route("/register", methods=['POST'])

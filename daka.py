@@ -1,4 +1,4 @@
-import time
+import userdb
 from selenium import webdriver
 from selenium.common.exceptions import \
     NoSuchElementException, NoAlertPresentException, UnexpectedAlertPresentException, InvalidSelectorException, \
@@ -114,11 +114,14 @@ def dakala(student, config):
         # form_body = driver.find_element_by_tag_name("form")
         vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
         form_body.screenshot(vc_image_path)
-
+        userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
         # print(os.path.dirname(os.path.abspath(vc_image_path)))
         # close browser window
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
         gen_log.warning(f'学号 {STU_ID} , 打卡错误')
+        userdb.db_delete_user_info(STU_ID)
+        userdb.db_put_dk_callback_info(STU_ID, "打卡失败")
+
     finally:
         driver.close()
         driver.quit()

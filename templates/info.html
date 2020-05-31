@@ -9,6 +9,9 @@
 <p>每天早上7点服务器会开始批量打卡，请各位留意最新打卡图的序号，保证打卡成功</p>
 <hr/>
 
+
+<h1>最近的一次打卡情况: {{ callback }}</h1>
+
 <form action="/daka/{{ stuid }}" method="post">
     <label for="daka_photo">(需要等待较长时间！！！等待时请不要返回或则刷新！！！)</label>
     <button id="daka_photo" type="submit">有图打卡</button>
