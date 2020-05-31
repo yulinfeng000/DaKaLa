@@ -113,7 +113,7 @@ def dakala(student, config):
         form_body.screenshot(vc_image_path)
         # print(os.path.dirname(os.path.abspath(vc_image_path)))
         # close browser window
-        return True
+        # return True
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
         gen_log.warning(f'学号 {STU_ID} , 打卡错误')
         return False
