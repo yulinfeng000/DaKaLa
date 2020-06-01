@@ -35,6 +35,7 @@
 基于React Native开发的移动端，代码很烂，但基本功能已实现。可自行构建移动端应用
 
 - [移动端项目地址](https://github.com/yulinfeng000/DaKaLa-mobile)
+- [app下载地址](https://github.com/yulinfeng000/DaKaLa/releases)
 
 #### 声明 移动端没有实机测试，目前稳定性，适配度未知
 
