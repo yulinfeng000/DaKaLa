@@ -25,7 +25,10 @@
 2. 运行： base_image 文件夹下运行base_build.sh脚本 构建基本镜像
 3. 运行: 主文件夹下运行`sh build.sh` 等待镜像构建完成
 4. 运行: `docker-compose up -d` (可自行修改docker-compose.yml 文件自定义)
-  
+# 网页端
+
+- 网页端地址 [打卡网页端](http://129.28.124.34:8888/) 
+
 ## 移动端
 
 <b> 编译好的app在 `mobile-app` 文件夹中，请自取 </b>
