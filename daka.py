@@ -119,7 +119,7 @@ def dakala(student, config):
         # close browser window
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
         gen_log.warning(f'学号 {STU_ID} , 打卡错误')
-        userdb.db_delete_user_info(STU_ID)
+        # userdb.db_delete_user_info(STU_ID)
         userdb.db_put_dk_callback_info(STU_ID, "打卡失败")
 
     finally:
