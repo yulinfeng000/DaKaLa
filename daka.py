@@ -1,3 +1,5 @@
+import time
+
 import userdb
 from selenium import webdriver
 from selenium.common.exceptions import \
@@ -8,6 +10,8 @@ from tornado.log import gen_log
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+DAKA_URL = "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/editSj.asp?UTp=Xs&Tx=33_1&ObjId="
 
 
 def dakala(student, config):
@@ -33,7 +37,6 @@ def dakala(student, config):
 
     # go to login page
     driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
-
     # time.sleep(1)
 
     try:
@@ -42,14 +45,17 @@ def dakala(student, config):
         username_input = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "txtId"))
         )
+        username_input.send_keys(STU_ID)
 
         password_input = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "txtMM"))
         )
+        password_input.send_keys(STU_PASSWD)
 
         login_submit_btn = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "IbtnEnter"))
         )
+        login_submit_btn.click()
 
         # username_input = driver.find_element_by_id("txtId")
         # password_input = driver.find_element_by_id("txtMM")
@@ -61,26 +67,34 @@ def dakala(student, config):
         """
 
         # clean and input value
-        username_input.clear()
-        username_input.send_keys(STU_ID)
-        password_input.clear()
-        password_input.send_keys(STU_PASSWD)
+        # username_input.clear()
+        # username_input.value = STU_ID
+        # username_input.send_keys(STU_ID)
+        # password_input.clear()
+        # password_input.send_keys(STU_PASSWD)
+        # password_input.value = STU_PASSWD
         # time.sleep(1)
         # submit
-        login_submit_btn.click()
-
+        # login_submit_btn.click()
+        """
+       
         a_tag_list = driver.find_elements_by_tag_name("a")
         for link in a_tag_list:
             if link.get_attribute("href").count('jkdk=Y') > 0:
                 link.click()
                 break
 
-        # time.sleep(1)
-        n = driver.window_handles  # 这个时候会生成一个新窗口或新标签页的句柄，代表这个窗口的模拟driver
-        # print('当前句柄: ', n)  # 会打印所有的句柄
-        driver.switch_to.window(n[-1])
+        """
 
+        # stu_daka_url = f'{DAKA_URL}{STU_ID}&Id={}'
+        driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
+        # time.sleep(1)
+        # n = driver.window_handles  # 这个时候会生成一个新窗口或新标签页的句柄，代表这个窗口的模拟driver
+        # print('当前句柄: ', n)  # 会打印所有的句柄
+        # driver.switch_to.window(n[-1])
+        # time.sleep(12)
         linkList = driver.find_elements_by_tag_name("a")
+        # gen_log.warning(linkList[1].get_attribute('href'))
         linkList[1].click()
 
         # fill data into form
@@ -121,9 +135,7 @@ def dakala(student, config):
         gen_log.warning(f'学号 {STU_ID} , 打卡错误')
         # userdb.db_delete_user_info(STU_ID)
         userdb.db_put_dk_callback_info(STU_ID, "打卡失败")
-
     finally:
         driver.close()
         driver.quit()
         # gen_log.info("打卡退出")
-        return True

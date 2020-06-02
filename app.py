@@ -61,8 +61,8 @@ def api_register():
         resp = Response('有必要信息未填写')
         resp.status_code = 403
         return resp
-    stuid = values.get('stuid')
     password = values.get('password')
+    stuid = values.get('stuid')
     config = {
         'homeStatus': values.get('homeStatus'),
         'livingStatus': values.get('livingStatus'),
