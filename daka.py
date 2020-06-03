@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 import userdb
 from selenium import webdriver
@@ -114,8 +115,12 @@ def dakala(student, config):
         questionnaire_submit.click()
 
         # time.sleep(1)
-        alert_window = driver.switch_to.alert
-        alert_window.accept()
+        try:
+            alert_window = driver.switch_to.alert
+            alert_window.accept()
+        except NoAlertPresentException:
+            gen_log(f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().date().strftime("%Y-%m-%d %H:%M:%S")}')
+            pass
 
         # get screenshot
 
