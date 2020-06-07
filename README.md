@@ -31,7 +31,8 @@
 
 ## 移动端
 
-<b> 编译好的app在 `mobile-app` 文件夹中，请自取 </b>
+<b> ~~编译好的app在 `mobile-app` 文件夹中，请自取~~ </b>
+<b> 从代码中移除，单独发布release </b>
 
 - ios 端由于我没有开发者账号，所以需要借助 <b> altsotre </b> 或者  <b> impactor </b> 安装，具体使用请百度
 
