@@ -1,0 +1,106 @@
+WARNING:aiocache.serializers.serializers:ujson module not found, using json
+WARNING:aiocache.serializers.serializers:msgpack not installed, MsgPackSerializer unavailable
+INFO:aiocache:aioredis not installed, RedisCache unavailable
+INFO:aiocache:aiomcache not installed, Memcached unavailable
+INFO:apscheduler.scheduler:Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO:apscheduler.scheduler:Added job "cycle_daka" to job store "default"
+INFO:apscheduler.scheduler:Scheduler started
+WARNING:aiocache.serializers.serializers:ujson module not found, using json
+WARNING:aiocache.serializers.serializers:msgpack not installed, MsgPackSerializer unavailable
+INFO:aiocache:aioredis not installed, RedisCache unavailable
+INFO:aiocache:aiomcache not installed, Memcached unavailable
+INFO:apscheduler.scheduler:Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO:apscheduler.scheduler:Added job "cycle_daka" to job store "default"
+INFO:apscheduler.scheduler:Scheduler started
+INFO:nonebot:Succeeded to import "qbotor.plugins.dakala"
+INFO:nonebot:Running on 10.0.0.2:5700
+INFO:apscheduler.scheduler:Scheduler started
+INFO:nonebot:Scheduler started
+INFO:asyncio:<Server sockets=[<socket.socket fd=15, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('10.0.0.2', 5700)>]> is serving
+INFO:quart.serving:Running on 10.0.0.2:5700 over http (CTRL + C to quit)
+INFO:asyncio:poll took 1279.540 ms: 1 events
+INFO:quart.serving:10.0.0.2:55955 GET /ws/ 1.1 101 - 7282
+INFO:quart.serving:10.0.0.2:55956 GET /ws/ 1.1 101 - 6021
+INFO:quart.app:received event: meta_event.lifecycle.connect
+INFO:asyncio:poll took 7994.782 ms: 1 events
+INFO:quart.app:received event: meta_event.heartbeat
+INFO:asyncio:poll took 14999.987 ms: 1 events
+INFO:quart.app:received event: meta_event.heartbeat
+INFO:asyncio:poll took 14998.661 ms: 1 events
+INFO:quart.app:received event: meta_event.heartbeat
+INFO:asyncio:poll took 6863.800 ms: 1 events
+INFO:asyncio:poll 2999.614 ms took 2475.953 ms: 1 events
+ERROR:asyncio:Task was destroyed but it is pending!
+source_traceback: Object created at (most recent call last):
+  File "app.py", line 208, in <module>
+    qbot.start(os.getenv("QBOT_IP"))
+  File "/Users/yulinfeng/PycharmProjects/DakaLa/qbotor/qbot.py", line 12, in start
+    nonebot.run(host=_host, port=5700)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/nonebot/__init__.py", line 112, in run
+    get_bot().run(host=host, port=port, *args, **kwargs)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/nonebot/__init__.py", line 61, in run
+    super().run(host=host, port=port, *args, **kwargs)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/aiocqhttp/__init__.py", line 206, in run
+    self._server_app.run(host=host, port=port, *args, **kwargs)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/quart/app.py", line 1624, in run
+    _cancel_all_tasks(loop)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/quart/app.py", line 2113, in _cancel_all_tasks
+    loop.run_until_complete(asyncio.gather(*tasks, loop=loop, return_exceptions=True))
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py", line 574, in run_until_complete
+    self.run_forever()
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py", line 541, in run_forever
+    self._run_once()
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py", line 1778, in _run_once
+    handle._run()
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/context.py", line 34, in _handle
+    await send(None)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/protocol/ws_stream.py", line 228, in app_send
+    await self.send(StreamClosed(stream_id=self.stream_id))
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/protocol/h11.py", line 139, in stream_send
+    await self._maybe_recycle()
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/protocol/h11.py", line 258, in _maybe_recycle
+    await self.send(Closed())
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py", line 99, in protocol_send
+    await self._update_keep_alive_timeout()
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py", line 140, in _update_keep_alive_timeout
+    _call_later(self.config.keep_alive_timeout, self._timeout)
+task: <Task pending coro=<_call_later() done, defined at /Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py:148> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x110a8db10>()] created at /usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py:395> created at /Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py:140>
+ERROR:asyncio:Task was destroyed but it is pending!
+source_traceback: Object created at (most recent call last):
+  File "app.py", line 208, in <module>
+    qbot.start(os.getenv("QBOT_IP"))
+  File "/Users/yulinfeng/PycharmProjects/DakaLa/qbotor/qbot.py", line 12, in start
+    nonebot.run(host=_host, port=5700)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/nonebot/__init__.py", line 112, in run
+    get_bot().run(host=host, port=port, *args, **kwargs)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/nonebot/__init__.py", line 61, in run
+    super().run(host=host, port=port, *args, **kwargs)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/aiocqhttp/__init__.py", line 206, in run
+    self._server_app.run(host=host, port=port, *args, **kwargs)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/quart/app.py", line 1624, in run
+    _cancel_all_tasks(loop)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/quart/app.py", line 2113, in _cancel_all_tasks
+    loop.run_until_complete(asyncio.gather(*tasks, loop=loop, return_exceptions=True))
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py", line 574, in run_until_complete
+    self.run_forever()
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py", line 541, in run_forever
+    self._run_once()
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py", line 1778, in _run_once
+    handle._run()
+  File "/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/context.py", line 34, in _handle
+    await send(None)
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/protocol/ws_stream.py", line 228, in app_send
+    await self.send(StreamClosed(stream_id=self.stream_id))
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/protocol/h11.py", line 139, in stream_send
+    await self._maybe_recycle()
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/protocol/h11.py", line 258, in _maybe_recycle
+    await self.send(Closed())
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py", line 99, in protocol_send
+    await self._update_keep_alive_timeout()
+  File "/Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py", line 140, in _update_keep_alive_timeout
+    _call_later(self.config.keep_alive_timeout, self._timeout)
+task: <Task pending coro=<_call_later() done, defined at /Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py:148> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x110952190>()] created at /usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/asyncio/base_events.py:395> created at /Users/yulinfeng/.virtualenvs/DakaLa/lib/python3.7/site-packages/hypercorn/asyncio/tcp_server.py:140>

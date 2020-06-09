@@ -144,3 +144,101 @@ def dakala(student, config):
         driver.close()
         driver.quit()
         # gen_log.info("打卡退出")
+
+
+async def async_dakala(student, config,image_location):
+    # print(student, config)
+    STU_ID = student['stuid']
+    STU_PASSWD = student['password']
+
+    if STU_ID == "" and STU_PASSWD == "":
+        # print("没有设置教务处用户名和密码")
+        return False
+
+    mobileEmulation = {'deviceName': 'iPhone X'}
+    options = webdriver.ChromeOptions()
+    options.add_argument('--disable-gpu')  # 谷歌文档提到需要加上这个属性来规避bug
+    # options.add_argument('headless')
+    # options.add_argument('--no-sandbox')
+    options.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片, 提升速度
+    options.add_experimental_option('mobileEmulation', mobileEmulation)
+    # start chrome and maximize window
+    driver = webdriver.Chrome(chrome_options=options)
+
+    driver.maximize_window()
+
+    # go to login page
+    driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
+    # time.sleep(1)
+
+    try:
+        # find input element
+
+        username_input = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.ID, "txtId"))
+        )
+        username_input.send_keys(STU_ID)
+
+        password_input = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.ID, "txtMM"))
+        )
+        password_input.send_keys(STU_PASSWD)
+
+        login_submit_btn = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.ID, "IbtnEnter"))
+        )
+        login_submit_btn.click()
+        driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
+        linkList = driver.find_elements_by_tag_name("a")
+        linkList[1].click()
+
+        if config is not None:
+            city_status = driver.find_element_by_name("sF21650_5")
+            working_place = driver.find_element_by_name("sF21650_6")
+            health_status = driver.find_element_by_name("sF21650_7")
+            living_status = driver.find_element_by_name("sF21650_8")
+            home_status = driver.find_element_by_name("sF21650_9")
+
+            Select(city_status).select_by_value(config['cityStatus'])
+            Select(working_place).select_by_value(config['workingPlace'])
+            Select(health_status).select_by_value(config['healthStatus'])
+            Select(living_status).select_by_value(config['livingStatus'])
+            Select(home_status).select_by_value(config['homeStatus'])
+
+        questionnaire_submit = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.NAME, "B2"))
+        )
+        questionnaire_submit.click()
+
+        # time.sleep(1)
+        try:
+            alert_window = driver.switch_to.alert
+            alert_window.accept()
+        except NoAlertPresentException:
+            gen_log(f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().date().strftime("%Y-%m-%d %H:%M:%S")}')
+            pass
+
+        form_body = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.TAG_NAME, "form"))
+        )
+
+        vc_image_path = f'{image_location}/{STU_ID}_img.png'
+        form_body.screenshot(vc_image_path)
+        userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
+        return True
+    except NoSuchElementException:
+        gen_log.warning(f'学号 {STU_ID} , 打卡错误')
+        userdb.db_put_dk_callback_info(STU_ID, "打卡失败")
+        return False
+    except NoAlertPresentException:
+        gen_log.warning(f'学号 {STU_ID} , 打卡错误')
+        userdb.db_put_dk_callback_info(STU_ID, "打卡失败")
+        return False
+    except UnexpectedAlertPresentException:
+        gen_log.warning(f'学号 {STU_ID} , 打卡错误')
+        userdb.db_put_dk_callback_info(STU_ID, "打卡失败")
+        return False
+    finally:
+        driver.close()
+        driver.quit()
+
