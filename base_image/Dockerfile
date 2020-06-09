@@ -9,6 +9,6 @@ RUN   sed -i "s/\/\/.*archive.ubuntu.com/\/\/mirrors.aliyun.com/g;s/\/\/.*securi
 
 RUN apt update -y
 RUN apt install python3-distutils -y
-RUN apt install -y pip-python3
+RUN apt install pip-python3 -y
 # RUN python3 get-pip.py
 RUN pip3 install -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
