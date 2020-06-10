@@ -1,14 +1,12 @@
 import json
 
 import plyvel
-from os import path
 
+DB_LOCATION = "./static/db"
 STUDENT_TABLE = "STUDENT_"
 STUDENT_CONFIG_TABLE = "CONFIG_TABLE_"
 DAKA_CALLBACK_INFO = "DAKA_CALLBACK_INFO_"
-STUDENT_QQ_TABLE = 'STUDENT_QQ_'
 
-DB_LOCATION = path.join(path.dirname(__file__), "static", "db")
 db = plyvel.DB(DB_LOCATION, create_if_missing=True)
 
 
@@ -76,21 +74,6 @@ def db_put_dk_callback_info(stuid, info):
 
 def db_get_dk_callback_info(stuid):
     return get_value(f'{DAKA_CALLBACK_INFO}{stuid}')
-
-
-def db_put_user_qq_id(qqid, stuinfo):
-    put_object(f'{STUDENT_QQ_TABLE}{qqid}', {
-        'stuid': stuinfo[0],
-        'password': stuinfo[1]
-    })
-
-
-def db_get_user_qq_id(qqid):
-    return get_object(f'{STUDENT_QQ_TABLE}{qqid}')
-
-
-def db_delete_user_qq_id(qqid):
-    return delete(f'{STUDENT_QQ_TABLE},{qqid}')
 
 
 def find_all_user():

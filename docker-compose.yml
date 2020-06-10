@@ -5,8 +5,6 @@ services:
     init: true
     container_name: dakala
     restart: always
-    environment:
-      QBOT_IP: "129.28.124.34"
     ports:
       - 8888:5000
     volumes:

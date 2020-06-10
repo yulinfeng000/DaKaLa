@@ -14,7 +14,6 @@ from concurrent.futures import ThreadPoolExecutor
 from tornado.log import gen_log
 import os
 from datetime import timedelta
-from qbotor import qbot
 
 app = Flask(__name__, static_folder='./static')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
@@ -183,7 +182,7 @@ def daka(stuid):
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     t1.start()
     while t1.is_alive():
-        time.sleep(0.5)
+        time.sleep(1)
     return photo(stuid), 200
 
 
@@ -203,7 +202,5 @@ def cycle_daka():
 if __name__ == '__main__':
     scheduler.start()
     http_server.listen(5000, "0.0.0.0")
-    qbotip = os.getenv("QBOT_IP")
-    if qbotip is not None:
-        qbot.start(os.getenv("QBOT_IP"))
+
     IOLoop.instance().start()
