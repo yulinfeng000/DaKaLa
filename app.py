@@ -179,10 +179,16 @@ def api_dakanophoto(stuid):
 @app.route('/daka/<stuid>', methods=['POST'])
 def daka(stuid):
     gen_log.info(f'学号 {stuid},执行了手动打卡')
+    task = t_pool.submit(daka_worker,stuid)
+    while not task.done():
+        time.sleep(0.5)
+    """
+    放弃独立线程，交给线程池执行
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     t1.start()
     while t1.is_alive():
         time.sleep(1)
+    """
     return photo(stuid), 200
 
 
