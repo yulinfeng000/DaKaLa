@@ -12,7 +12,7 @@ COPY ./app.py ./app.py
 COPY ./userdb.py ./userdb.py
 COPY ./get-pip.py ./get-pip.py
 COPY ./requirements.txt ./requirements.txt
-COPY ./templates/* ./templates/*
+COPY ./templates/* ./templates/
 VOLUME /usr/local/dakala/static/
 EXPOSE 5000 
 CMD ["python3" , "app.py"]
