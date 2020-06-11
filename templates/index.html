@@ -2,56 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DaKaLa</title>
+    <title>login or register</title>
 </head>
 <body>
-
-<h1>填写配置,一定不要输错！ 一定不要输错！一定不要输错！打不上卡请自行负责</h1>
-<h3>请一定要检查最新的打卡图，确保是最新！！！不是或则没有意味信息填错，请删除自己信息重新填写！</h3>
-<h4>12点到6点打卡会错误，是学校那边的原因</h4>
+<h1>登录DaKaLa打卡</h1>
 <hr/>
-
-<form action="/register" method="post" enctype="multipart/form-data">
-    <label for="form_stuid">学号</label>
+<form action="/login" method="post">
+     <label for="form_stuid">学号</label>
     <input id="form_stuid" type="number" name="stuid"><br/><br/>
 
     <label for="form_pwd">密码</label>
-    <input id="form_pwd" type="text" name="password"><br/><br/>
+    <input id="form_pwd" type="password" name="password"><br/><br/>
 
-    <p># 现居住地城市情况 1=> 一般地区  2=> 疫情防控重点地区 3=> 所在小区被隔离管控</p>
-    <label for="form_cityStatus">现居住地城市情况 </label>
-    <input id="form_cityStatus" type="text" value="1" name="cityStatus"><br/><br/>
-
-    <p># 今天工作状态 1 =>航空港校内上班或学习 2 =>龙泉校内上班或学习 3=>在校外完成实习任务 4 =>在校外 5=>在家</p>
-    <label for="form_workingPlace">今天工作状态</label>
-    <input id="form_workingPlace" value="5" type="text" name="workingPlace"><br/><br/>
-
-    <p># 个人健康状况 1 =>正常  2 =>有可疑症状  3=>疑似感染  4=>确诊感染  5 =>确诊感染但已康复</p>
-    <label for="form_healthStatus">个人健康状况</label>
-    <input id="form_healthStatus" value="1" type="text" name="healthStatus"><br/><br/>
-
-
-    <p># 个人生活状态 1 =>正常 3 =>居家隔离观察 4 =>集中隔离观察 5 =>居家治疗 2 =住院治疗</p>
-    <label for="form_livingStatus">个人生活状态</label>
-    <input id="form_livingStatus" value="1" type="text" name="livingStatus"><br/><br/>
-
-
-    <p>#家庭成员状况 1 =>全部正常 2 =>有人有可疑症状 3 =>有人疑似感染 4 =>有人确诊感染 5 =>有人确诊感染但已康复</p>
-    <label for="form_homeStatus">家庭成员状况</label>
-    <input id="form_homeStatus" type="text" name="homeStatus" value="1"><br/><br/>
-
-    <button type="submit">submit</button>
-
+    <button type="submit">登录</button>
 </form>
+
+
 
 
 <hr/>
 
-<form action="/delete" method="post">
-    <label for="delete_stu">根据学号删除信息</label>
-    <input type="number" id="delete_stu" name="stuid">
-    <button type="submit">删除信息</button>
+<form action="/goregister" method="get">
+<button type="submit">没有配置过打卡账号？去注册配置</button>
 </form>
-
 </body>
 </html>

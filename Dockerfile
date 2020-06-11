@@ -13,7 +13,7 @@ COPY ./app.py ./app.py
 COPY ./userdb.py ./userdb.py
 COPY ./get-pip.py ./get-pip.py
 COPY ./requirements.txt ./requirements.txt
-COPY  ./templates/index.html ./templates/index.html
+COPY  templates/register.html ./templates/index.html
 COPY ./templates/info.html ./templates/info.html
 COPY ./templates/photo.html ./templates/photo.html
 COPY ./templates/success.html ./templates/success.html

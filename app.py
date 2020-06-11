@@ -2,7 +2,7 @@ import random
 import string
 import logsetting  # 不能删！！
 import time
-from flask import Flask, request, render_template, Response
+from flask import Flask, request, render_template, Response, redirect
 import userdb
 from daka import dakala
 import threading
@@ -21,7 +21,6 @@ scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
 
-
 @app.after_request
 def add_header(r):
     """
@@ -39,17 +38,30 @@ def add_header(r):
 def hello_world():
     cok = request.cookies
     stuid = cok.get("stuid")
+    cok_password = cok.get('password')
     if stuid is None:
         return render_template('index.html')
-    elif userdb.db_get_user_by_stuid(stuid) is None:
+
+    _target_user = userdb.db_get_user_by_stuid(stuid)
+    if _target_user is None:
         resp = Response(render_template('index.html'))
         resp.delete_cookie("stuid")
+        resp.delete_cookie("password")
         return resp
-    else:
-        ck_info = userdb.db_get_dk_callback_info(stuid)
-        if ck_info is None:
-            ck_info = "还没在服务器上打过卡呢"
-        return render_template('info.html', stuid=stuid, callback=ck_info)
+    if _target_user['password'] != cok_password:
+        resp = Response(render_template('index.html'))
+        resp.delete_cookie("stuid")
+        resp.delete_cookie("password")
+        return render_template('index.html')
+
+    # 续费cookie
+    ck_info = userdb.db_get_dk_callback_info(stuid)
+    if ck_info is None:
+        ck_info = "还没在服务器上打过卡呢"
+    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info))
+    resp.set_cookie("stuid",stuid,max_age=60*60*24*7)
+    resp.set_cookie("password",cok_password,max_age=60*60*24*7)
+    return resp
 
 
 @app.route('/api/register', methods=['POST'])
@@ -83,11 +95,41 @@ def api_get_ck_info(stuid):
     ck_info = userdb.db_get_dk_callback_info(stuid)
     if ck_info is None:
         ck_info = "还没在服务器上打过卡呢"
-    return ck_info,200
+    return ck_info, 200
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    required = ['stuid', 'password']
+    values = request.form
+    if not all(k in values for k in required):
+        return redirect("/")
+
+    stuid = values.get('stuid')
+    input_password = values.get('password')
+    _target_user = userdb.db_get_user_by_stuid(stuid)
+    if _target_user is None:
+        return redirect("/")
+
+    if _target_user['password'] != input_password:
+        return redirect("/")
+    ck_info = userdb.db_get_dk_callback_info(stuid)
+    if ck_info is None:
+        ck_info = "还没在服务器上打过卡呢"
+
+    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info))
+    resp.set_cookie("stuid", stuid, max_age=60*60*24*7)
+    resp.set_cookie('password',input_password)
+    return resp
+
+
+@app.route('/goregister', methods=['GET', 'POST'])
+def go_register():
+    return render_template('register.html')
 
 
 @app.route("/register", methods=['POST'])
-def register():
+def do_register():
     required = ['stuid', 'password', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
     values = request.form
     if not all(k in values for k in required):
@@ -107,6 +149,22 @@ def register():
     resp = Response(render_template('success.html'))
     resp.set_cookie("stuid", stuid)
     gen_log.info(f'学号 {stuid} , 浏览器注册成功')
+    return resp
+
+
+@app.route('/quit',methods=['POST'])
+def quit():
+    required = ['stuid']
+    values = request.form
+    if not all(k in values for k in required):
+        return 'Missing values', 403
+    stuid = values.get('stuid')
+    cok = request.cookies
+    stuid = cok.get("stuid")
+    # cok_password = cok.get('password')
+    resp = Response(render_template("quit.html"))
+    resp.delete_cookie("stuid")
+    resp.delete_cookie("password")
     return resp
 
 
@@ -179,7 +237,7 @@ def api_dakanophoto(stuid):
 @app.route('/daka/<stuid>', methods=['POST'])
 def daka(stuid):
     gen_log.info(f'学号 {stuid},执行了手动打卡')
-    task = t_pool.submit(daka_worker,stuid)
+    task = t_pool.submit(daka_worker, stuid)
     while not task.done():
         time.sleep(0.5)
     """

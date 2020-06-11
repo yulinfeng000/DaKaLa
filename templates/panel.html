@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>admin-panel</title>
+</head>
+<body>
+
+
+<table>
+    <thead>
+        <th>学号</th>
+        <th>打卡成功否</th>
+    </thead>
+
+    <tbody>
+         {% for stu in stulist %}
+            <td>{{ stu.stuid }}</td>
+             <td>{{ stu.flag }}</td>
+         {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

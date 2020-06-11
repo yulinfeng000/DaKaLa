@@ -37,11 +37,27 @@
 
 <hr/>
 <br/>
-<form action="/delete" method="post">
-    <input type="hidden" name="stuid" value="{{ stuid }}">
-    <button type="submit">删除我的信息</button>
-</form>
+<table>
 
+    <td>
+        <form action="/delete" method="post">
+            <input type="hidden" name="stuid" value="{{ stuid }}">
+            <button type="submit">删除我的信息</button>
+        </form>
+    </td>
+
+    <td>
+         <form action="/quit" method="post" style="float:left; ">
+            <input type="hidden" name="stuid" value="{{ stuid }}">
+            <button type="submit">退出登录</button>
+        </form>
+    </td>
+</table>
 
 </body>
+
+
+
+<style>
+</style>
 </html>
