@@ -6,6 +6,7 @@ DB_LOCATION = "./static/db"
 STUDENT_TABLE = "STUDENT_"
 STUDENT_CONFIG_TABLE = "CONFIG_TABLE_"
 DAKA_CALLBACK_INFO = "DAKA_CALLBACK_INFO_"
+USER_IP = "USER_IP_"
 
 db = plyvel.DB(DB_LOCATION, create_if_missing=True)
 
@@ -82,6 +83,14 @@ def find_all_user():
     for key, value in itor:
         res.append(json.loads(value))
     return res
+
+
+def db_put_user_ip(stuid, ip):
+    put_value(f'{USER_IP}{stuid}', ip)
+
+
+def db_get_user_last_ip(stuid):
+    return get_value(f'{USER_IP}{stuid}')
 
 
 if __name__ == '__main__':

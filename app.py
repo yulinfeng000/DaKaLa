@@ -21,6 +21,7 @@ scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
 
+
 @app.after_request
 def add_header(r):
     """
@@ -36,7 +37,9 @@ def add_header(r):
 
 @app.route('/', methods=['GET'])
 def hello_world():
+    user_ip = request.remote_addr
     cok = request.cookies
+    print(user_ip)
     stuid = cok.get("stuid")
     cok_password = cok.get('password')
     if stuid is None:
@@ -48,19 +51,29 @@ def hello_world():
         resp.delete_cookie("stuid")
         resp.delete_cookie("password")
         return resp
+
     if _target_user['password'] != cok_password:
         resp = Response(render_template('index.html'))
         resp.delete_cookie("stuid")
         resp.delete_cookie("password")
         return render_template('index.html')
 
+    _last_ip = userdb.db_get_user_last_ip(stuid)
+
+    if _last_ip is not None:  # 如果你以前登录过
+        if _last_ip != user_ip:  # 如果异地登录
+            resp = Response(render_template('index.html'))
+            resp.delete_cookie("stuid")
+            resp.delete_cookie("password")
+            return render_template('index.html')
+
     # 续费cookie
     ck_info = userdb.db_get_dk_callback_info(stuid)
     if ck_info is None:
         ck_info = "还没在服务器上打过卡呢"
     resp = Response(render_template('info.html', stuid=stuid, callback=ck_info))
-    resp.set_cookie("stuid",stuid,max_age=60*60*24*7)
-    resp.set_cookie("password",cok_password,max_age=60*60*24*7)
+    resp.set_cookie("stuid", stuid, max_age=60 * 60 * 24 * 7)
+    resp.set_cookie("password", cok_password, max_age=60 * 60 * 24 * 7)
     return resp
 
 
@@ -113,13 +126,16 @@ def login():
 
     if _target_user['password'] != input_password:
         return redirect("/")
+
     ck_info = userdb.db_get_dk_callback_info(stuid)
     if ck_info is None:
         ck_info = "还没在服务器上打过卡呢"
 
+    user_ip = request.remote_addr
+    userdb.db_put_user_ip(stuid, user_ip)  # 更新你的上次登录ip
     resp = Response(render_template('info.html', stuid=stuid, callback=ck_info))
-    resp.set_cookie("stuid", stuid, max_age=60*60*24*7)
-    resp.set_cookie('password',input_password)
+    resp.set_cookie("stuid", stuid, max_age=60 * 60 * 24 * 7)
+    resp.set_cookie('password', input_password)
     return resp
 
 
@@ -152,7 +168,7 @@ def do_register():
     return resp
 
 
-@app.route('/quit',methods=['POST'])
+@app.route('/quit', methods=['POST'])
 def quit():
     required = ['stuid']
     values = request.form
