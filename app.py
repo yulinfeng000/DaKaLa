@@ -65,7 +65,7 @@ def hello_world():
             resp = Response(render_template('index.html'))
             resp.delete_cookie("stuid")
             resp.delete_cookie("password")
-            return render_template('index.html')
+            return resp
 
     # 续费cookie
     ck_info = userdb.db_get_dk_callback_info(stuid)
