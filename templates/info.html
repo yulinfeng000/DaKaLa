@@ -27,8 +27,43 @@
 <form action="/photo/{{ stuid }}" method="post">
     <button type="submit">查看最新的打卡图</button>
 </form>
+
 <br/>
 <br/>
+
+
+<form action="/updateconfig" method="post" enctype="multipart/form-data">
+
+
+    <input type="hidden" name="stuid" value="{{ stuid }}">
+    <label for="form_stuid">学号</label>
+    <input id="form_stuid" type="number" name="stuid" value="{{ stuid }}"><br/><br/>
+
+    <p># 现居住地城市情况 1=> 一般地区  2=> 疫情防控重点地区 3=> 所在小区被隔离管控</p>
+    <label for="form_cityStatus">现居住地城市情况 </label>
+    <input id="form_cityStatus" type="text" name="cityStatus" value="{{ config.cityStatus }}"><br/><br/>
+
+    <p># 今天工作状态 1 =>航空港校内上班或学习 2 =>龙泉校内上班或学习 3=>在校外完成实习任务 4 =>在校外 5=>在家</p>
+    <label for="form_workingPlace">今天工作状态</label>
+    <input id="form_workingPlace" value="{{ config.workingPlace }}" type="text" name="workingPlace"><br/><br/>
+
+    <p># 个人健康状况 1 =>正常  2 =>有可疑症状  3=>疑似感染  4=>确诊感染  5 =>确诊感染但已康复</p>
+    <label for="form_healthStatus">个人健康状况</label>
+    <input id="form_healthStatus" value="{{ config.healthStatus }}" type="text" name="healthStatus"><br/><br/>
+
+
+    <p># 个人生活状态 1 =>正常 3 =>居家隔离观察 4 =>集中隔离观察 5 =>居家治疗 2 =住院治疗</p>
+    <label for="form_livingStatus">个人生活状态</label>
+    <input id="form_livingStatus" value="{{ config.livingStatus }}" type="text" name="livingStatus"><br/><br/>
+
+
+    <p>#家庭成员状况 1 =>全部正常 2 =>有人有可疑症状 3 =>有人疑似感染 4 =>有人确诊感染 5 =>有人确诊感染但已康复</p>
+    <label for="form_homeStatus">家庭成员状况</label>
+    <input id="form_homeStatus" type="text" name="homeStatus" value="{{ config.homeStatus }}"><br/><br/>
+
+    <button type="submit">submit</button>
+
+</form>
 <br/>
 <br/>
 <br/>

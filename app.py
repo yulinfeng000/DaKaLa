@@ -71,10 +71,33 @@ def hello_world():
     ck_info = userdb.db_get_dk_callback_info(stuid)
     if ck_info is None:
         ck_info = "还没在服务器上打过卡呢"
-    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info))
+    stu_config = userdb.db_get_user_config(stuid)
+    print(stu_config)
+    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info, config=stu_config))
     resp.set_cookie("stuid", stuid, max_age=60 * 60 * 24 * 7)
     resp.set_cookie("password", cok_password, max_age=60 * 60 * 24 * 7)
     return resp
+
+
+@app.route("/updateconfig", methods=['POST'])
+def updateConfig():
+    required = ['stuid', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
+    values = request.form
+    if not all(k in values for k in required):
+        resp = Response('有必要信息未填写')
+        resp.status_code = 403
+        return resp
+
+    stuid = values.get('stuid')
+    config = {
+        'homeStatus': values.get('homeStatus'),
+        'livingStatus': values.get('livingStatus'),
+        'healthStatus': values.get('healthStatus'),
+        'workingPlace': values.get('workingPlace'),
+        'cityStatus': values.get('cityStatus')
+    }
+    userdb.db_put_user_config(stuid, config)
+    return redirect("/")
 
 
 @app.route('/api/register', methods=['POST'])
