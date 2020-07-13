@@ -1,19 +1,18 @@
 import random
 import string
-import logsetting  # 不能删！！
+from logsetting import gen_log  # 不能删！！
 import time
 from flask import Flask, request, render_template, Response, redirect
 import userdb
 from daka import dakala
-import threading
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from flask_apscheduler import APScheduler
 from concurrent.futures import ThreadPoolExecutor
-from tornado.log import gen_log
 import os
 from datetime import timedelta
+import datetime
 
 app = Flask(__name__, static_folder='./static')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
@@ -72,7 +71,6 @@ def hello_world():
     if ck_info is None:
         ck_info = "还没在服务器上打过卡呢"
     stu_config = userdb.db_get_user_config(stuid)
-    print(stu_config)
     resp = Response(render_template('info.html', stuid=stuid, callback=ck_info, config=stu_config))
     resp.set_cookie("stuid", stuid, max_age=60 * 60 * 24 * 7)
     resp.set_cookie("password", cok_password, max_age=60 * 60 * 24 * 7)
@@ -156,7 +154,8 @@ def login():
 
     user_ip = request.remote_addr
     userdb.db_put_user_ip(stuid, user_ip)  # 更新你的上次登录ip
-    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info))
+    stu_config = userdb.db_get_user_config(stuid)
+    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info, config=stu_config))
     resp.set_cookie("stuid", stuid, max_age=60 * 60 * 24 * 7)
     resp.set_cookie('password', input_password)
     return resp
@@ -187,7 +186,7 @@ def do_register():
 
     resp = Response(render_template('success.html'))
     resp.set_cookie("stuid", stuid)
-    gen_log.info(f'学号 {stuid} , 浏览器注册成功')
+    gen_log.info(f"学号 {stuid} , 浏览器注册成功,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return resp
 
 
@@ -220,7 +219,7 @@ def del_info():
         os.remove(stu_img_path)
     resp = Response("<h1>delete success</h1>")
     resp.delete_cookie("stuid")
-    gen_log.warning(f'学号 {stuid} ,通过浏览器删除了自己信息')
+    gen_log.warning(f"学号 {stuid} ,通过浏览器删除了自己信息,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return resp, 200
 
 
@@ -255,7 +254,7 @@ def dakanophoto(stuid):
     t_pool.submit(daka_worker, stuid)
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
-    gen_log.info(f'学号 {stuid},执行了手动打卡')
+    gen_log.info(f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return "打卡成功", 200
 
 
@@ -269,16 +268,16 @@ def api_dakanophoto(stuid):
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
     t_pool.submit(daka_worker, stuid)
-    gen_log.info(f'学号 {stuid},执行了手动打卡')
+    gen_log.info(f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return "打卡成功", 200
 
 
 @app.route('/daka/<stuid>', methods=['POST'])
 def daka(stuid):
-    gen_log.info(f'学号 {stuid},执行了手动打卡')
+    gen_log.info(f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     task = t_pool.submit(daka_worker, stuid)
     while not task.done():
-        time.sleep(0.5)
+        time.sleep(1)
     """
     放弃独立线程，交给线程池执行
     t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
@@ -289,10 +288,9 @@ def daka(stuid):
     return photo(stuid), 200
 
 
-@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=7, minute=1)
-# @app.route('/admin/daka/all',methods=['GET'])
+@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
 def cycle_daka():
-    gen_log.info("今日批量打卡开始执行")
+    gen_log.info(f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     mylist = userdb.find_all_user()
     for stu in mylist:
         t_pool.submit(daka_worker, stu['stuid'])
@@ -302,8 +300,23 @@ def cycle_daka():
     #  return "daka成公",200
 
 
+@app.route('/admin/daka/all', methods=['GET'])
+def admin_command_daka():
+    gen_log.info(f'超级管理员手动全局打卡执行，时间为{datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+    supercode = request.values.get("supercode")
+    if supercode is None:
+        return "YOU DONT CONFIG SUPER DAKA COMMAND!", 404
+    __APP_SUPER_CODE = os.getenv("SUPER_CODE")
+    # print(__APP_SUPER_CODE)
+    if supercode == __APP_SUPER_CODE:
+        mylist = userdb.find_all_user()
+        for stu in mylist:
+            t_pool.submit(daka_worker, stu['stuid'])
+        return "SUPER COMMAND EXEC SUCCESS !"
+    return "Permission Error!"
+
+
 if __name__ == '__main__':
     scheduler.start()
     http_server.listen(5000, "0.0.0.0")
-
     IOLoop.instance().start()

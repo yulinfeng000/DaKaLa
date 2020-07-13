@@ -1,18 +1,17 @@
-import time
 from datetime import datetime
-
 import userdb
 from selenium import webdriver
 from selenium.common.exceptions import \
     NoSuchElementException, NoAlertPresentException, UnexpectedAlertPresentException, InvalidSelectorException, \
     InvalidElementStateException
 from selenium.webdriver.support.select import Select
-from tornado.log import gen_log
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import logging
 
 DAKA_URL = "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/editSj.asp?UTp=Xs&Tx=33_1&ObjId="
+logger = logging.getLogger(__file__)
 
 
 def dakala(student, config):
@@ -119,8 +118,16 @@ def dakala(student, config):
             alert_window = driver.switch_to.alert
             alert_window.accept()
         except NoAlertPresentException:
-            gen_log(f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().date().strftime("%Y-%m-%d %H:%M:%S")}')
-            pass
+            logger.warning(f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+            form_body = WebDriverWait(driver, 2).until(
+                EC.presence_of_element_located((By.TAG_NAME, "form"))
+            )
+
+            # form_body = driver.find_element_by_tag_name("form")
+            vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
+            form_body.screenshot(vc_image_path)
+            logger.info(f"{STU_ID} 打卡： 确认窗口未弹出但打卡成功并已经截图,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+            userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
 
         # get screenshot
 
@@ -134,12 +141,13 @@ def dakala(student, config):
         vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
         form_body.screenshot(vc_image_path)
         userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
+        logger.info(f"{STU_ID}: 打卡成功,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
         # print(os.path.dirname(os.path.abspath(vc_image_path)))
         # close browser window
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
-        gen_log.warning(f'学号 {STU_ID} , 打卡错误')
+        logger.warning(f'学号 {STU_ID} , 打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
         # userdb.db_delete_user_info(STU_ID)
-        userdb.db_put_dk_callback_info(STU_ID, "打卡失败")
+        userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
     finally:
         driver.close()
         driver.quit()
