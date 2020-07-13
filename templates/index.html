@@ -3,27 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>login or register</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.css" rel="stylesheet">
+    <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+   <script src="https://cdn.bootcdn.net/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.js"></script>
 </head>
+
 <body>
-<h1>登录DaKaLa打卡</h1>
-<hr/>
+
+<div data-role="page" id="app">
+
+    <div data-role="header">
+        <h1>登录DaKaLa打卡</h1>
+    </div>
+
+    <div data-role="content">
 <form action="/login" method="post">
+    <div class="ui-field-contain">
      <label for="form_stuid">学号</label>
-    <input id="form_stuid" type="number" name="stuid"><br/><br/>
+    <input data-theme="a" id="form_stuid" type="number" name="stuid"><br/><br/>
+    </div>
 
+    <div class="ui-field-contain">
     <label for="form_pwd">密码</label>
-    <input id="form_pwd" type="password" name="password"><br/><br/>
+    <input  data-theme="a" id="form_pwd" type="password" name="password"><br/><br/>
+    </div>
 
-    <button type="submit">登录</button>
+
+    <button class="ui-shadow ui-btn ui-corner-all" type="submit">登录</button>
 </form>
 
 
-
+</div>
 
 <hr/>
 
+  <div data-role="footer">
 <form action="/goregister" method="get">
-<button type="submit">没有配置过打卡账号？去注册配置</button>
+<button class="ui-shadow ui-btn ui-corner-all" type="submit">没有配置过打卡账号？去注册配置</button>
 </form>
+  </div>
+</div>
 </body>
 </html>
