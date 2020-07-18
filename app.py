@@ -38,7 +38,6 @@ def add_header(r):
 def hello_world():
     user_ip = request.remote_addr
     cok = request.cookies
-    print(user_ip)
     stuid = cok.get("stuid")
     cok_password = cok.get('password')
     if stuid is None:
