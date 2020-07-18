@@ -27,8 +27,9 @@
 
 <form action="/daka/{{ stuid }}" method="post">
      <div class="ui-field-contain">
+         <button class="btn btn-raised btn-primary"  id="daka_photo" type="submit">有图打卡</button>
     <label class="bmd-label-static" for="daka_photo">(需要等待较长时间！！！等待时请不要返回或则刷新！！！)</label>
-    <button class="btn btn-raised btn-primary"  id="daka_photo" type="submit">有图打卡</button>
+
      </div>
 </form>
 
@@ -36,8 +37,9 @@
 
 <form action="/daka/nophoto/{{ stuid }}" method="post">
      <div class="ui-field-contain">
-    <label class="bmd-label-static" for="daka_nophoto">(若想查看最新的打卡图也需等待服务器生成)</label>
-    <button class="btn btn-raised btn-primary"  id="daka_nophoto" type="submit">无图打卡</button>
+
+    <button class="btn btn-raised btn-primary" id="daka_nophoto" type="submit">无图打卡</button>
+         <label class="bmd-label-static" for="daka_nophoto">(若想查看最新的打卡图也需等待服务器生成)</label>
      </div>
 </form>
 <br/>
