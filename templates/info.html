@@ -4,26 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>我的打卡面版</title>
-      <link href="https://cdn.bootcdn.net/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.css" rel="stylesheet">
-    <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
-   <script src="https://cdn.bootcdn.net/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+<script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
 </head>
 <body>
-<div data-role="page" id="panel">
 
-    <div data-role="header">
-<h1>我的打卡面版</h1>
-<p>每天早上8点服务器会开始批量打卡，请各位留意最新打卡图的序号，保证打卡成功</p>
-    </div>
-<hr/>
+    <nav class="navbar navbar-light bg-light" data-role="header">
+    <h2 class="navbar-brand">我的打卡面版</h2>
+    </nav>
 
 
-<h1>最近的一次打卡情况: {{ callback }}</h1>
+<div  class="container" id="panel">
+
+        <p class="lead">
+            <small>每天早上8点服务器会开始批量打卡，请各位留意最新打卡图的序号，保证打卡成功    </small>
+        </p>
+
+    最近的一次打卡情况: <h1>{{ callback }}</h1>
 
 <form action="/daka/{{ stuid }}" method="post">
      <div class="ui-field-contain">
-    <label for="daka_photo">(需要等待较长时间！！！等待时请不要返回或则刷新！！！)</label>
-    <button class="ui-shadow ui-btn ui-corner-all"  id="daka_photo" type="submit">有图打卡</button>
+    <label class="bmd-label-static" for="daka_photo">(需要等待较长时间！！！等待时请不要返回或则刷新！！！)</label>
+    <button class="btn btn-raised btn-primary"  id="daka_photo" type="submit">有图打卡</button>
      </div>
 </form>
 
@@ -31,13 +36,13 @@
 
 <form action="/daka/nophoto/{{ stuid }}" method="post">
      <div class="ui-field-contain">
-    <label for="daka_nophoto">(若想查看最新的打卡图也需等待服务器生成)</label>
-    <button class="ui-shadow ui-btn ui-corner-all"  id="daka_nophoto" type="submit">无图打卡</button>
+    <label class="bmd-label-static" for="daka_nophoto">(若想查看最新的打卡图也需等待服务器生成)</label>
+    <button class="btn btn-raised btn-primary"  id="daka_nophoto" type="submit">无图打卡</button>
      </div>
 </form>
 <br/>
 <form action="/photo/{{ stuid }}" method="post">
-    <button class="ui-shadow ui-btn ui-corner-all"  type="submit">查看最新的打卡图</button>
+    <button class="btn btn-raised btn-primary" type="submit">查看最新的打卡图</button>
 </form>
 
 <br/>
@@ -48,42 +53,41 @@
 
  <div class="ui-field-contain">
     <input type="hidden" name="stuid" value="{{ stuid }}">
-    <label for="form_stuid">学号</label>
-    <input id="form_stuid" type="number" name="stuid" value="{{ stuid }}"><br/><br/>
+    <label class="bmd-label-static" for="form_stuid">学号</label>
+    <input class="form-control" id="form_stuid" type="number" name="stuid" value="{{ stuid }}"><br/><br/>
  </div>
 
      <div class="ui-field-contain">
     <p># 现居住地城市情况 1=> 一般地区  2=> 疫情防控重点地区 3=> 所在小区被隔离管控</p>
-    <label for="form_cityStatus">现居住地城市情况 </label>
-    <input id="form_cityStatus" type="text" name="cityStatus" value="{{ config.cityStatus }}"><br/><br/>
+    <label class="bmd-label-static" for="form_cityStatus">现居住地城市情况 </label>
+    <input class="form-control" id="form_cityStatus" type="text" name="cityStatus" value="{{ config.cityStatus }}"><br/><br/>
      </div>
 
      <div class="ui-field-contain">
     <p># 今天工作状态 1 =>航空港校内上班或学习 2 =>龙泉校内上班或学习 3=>在校外完成实习任务 4 =>在校外 5=>在家</p>
-    <label for="form_workingPlace">今天工作状态</label>
-    <input id="form_workingPlace" value="{{ config.workingPlace }}" type="text" name="workingPlace"><br/><br/>
+    <label class="bmd-label-static" for="form_workingPlace">今天工作状态</label>
+    <input class="form-control" id="form_workingPlace" value="{{ config.workingPlace }}" type="text" name="workingPlace"><br/><br/>
      </div>
 
      <div class="ui-field-contain">
     <p># 个人健康状况 1 =>正常  2 =>有可疑症状  3=>疑似感染  4=>确诊感染  5 =>确诊感染但已康复</p>
-    <label for="form_healthStatus">个人健康状况</label>
-    <input id="form_healthStatus" value="{{ config.healthStatus }}" type="text" name="healthStatus"><br/><br/>
+    <label class="bmd-label-static" for="form_healthStatus">个人健康状况</label>
+    <input class="form-control" id="form_healthStatus" value="{{ config.healthStatus }}" type="text" name="healthStatus"><br/><br/>
      </div>
 
      <div class="ui-field-contain">
     <p># 个人生活状态 1 =>正常 3 =>居家隔离观察 4 =>集中隔离观察 5 =>居家治疗 2 =住院治疗</p>
-    <label for="form_livingStatus">个人生活状态</label>
-    <input id="form_livingStatus" value="{{ config.livingStatus }}" type="text" name="livingStatus"><br/><br/>
+    <label  class="bmd-label-static" for="form_livingStatus">个人生活状态</label>
+    <input class="form-control" id="form_livingStatus" value="{{ config.livingStatus }}" type="text" name="livingStatus"><br/><br/>
      </div>
 
      <div class="ui-field-contain">
     <p>#家庭成员状况 1 =>全部正常 2 =>有人有可疑症状 3 =>有人疑似感染 4 =>有人确诊感染 5 =>有人确诊感染但已康复</p>
-    <label for="form_homeStatus">家庭成员状况</label>
-    <input id="form_homeStatus" type="text" name="homeStatus" value="{{ config.homeStatus }}"><br/><br/>
+    <label class="bmd-label-static" for="form_homeStatus">家庭成员状况</label>
+    <input class="form-control" id="form_homeStatus" type="text" name="homeStatus" value="{{ config.homeStatus }}"><br/><br/>
      </div>
 
-
-    <button type="submit">更新配置</button>
+    <button  class="btn btn-raised btn-primary" type="submit">更新配置</button>
 
 </form>
 <br/>
@@ -98,15 +102,15 @@
 
     <td>
         <form action="/delete" method="post">
-            <input type="hidden" name="stuid" value="{{ stuid }}">
-            <button type="submit">删除我的信息</button>
+            <input class="form-control" type="hidden" name="stuid" value="{{ stuid }}">
+            <button  class="btn btn-raised btn-primary" type="submit">删除我的信息</button>
         </form>
     </td>
 
     <td>
          <form action="/quit" method="post" style="float:left; ">
-            <input type="hidden" name="stuid" value="{{ stuid }}">
-            <button type="submit">退出登录</button>
+            <input class="form-control" type="hidden" name="stuid" value="{{ stuid }}">
+            <button  class="btn btn-raised btn-primary" type="submit">退出登录</button>
         </form>
     </td>
 </table>

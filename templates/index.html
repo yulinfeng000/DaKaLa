@@ -4,33 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>login or register</title>
-    <link href="https://cdn.bootcdn.net/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.css" rel="stylesheet">
-    <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
-   <script src="https://cdn.bootcdn.net/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+<script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
 </head>
 
 <body>
 
-<div data-role="page" id="app">
-
-    <div data-role="header">
-        <h1>登录DaKaLa打卡</h1>
-    </div>
+ <nav  class="navbar navbar-light bg-light" data-role="header">
+        <h1 class="navbar-brand">登录DaKaLa打卡</h1>
+    </nav>
+<div class="container" data-role="page" id="app">
 
     <div data-role="content">
-<form action="/login" method="post">
-    <div class="ui-field-contain">
-     <label for="form_stuid">学号</label>
-    <input data-theme="a" id="form_stuid" type="number" name="stuid"><br/><br/>
+    <form action="/login" method="post">
+    <div class="form-group">
+     <label class="bmd-label-static" for="form_stuid">学号</label>
+    <input class="form-control"  data-theme="a" id="form_stuid" type="number" name="stuid"><br/><br/>
     </div>
 
-    <div class="ui-field-contain">
-    <label for="form_pwd">密码</label>
-    <input  data-theme="a" id="form_pwd" type="password" name="password"><br/><br/>
+    <div class="form-group">
+    <label class="bmd-label-static" for="form_pwd">密码</label>
+    <input  class="form-control" data-theme="a" id="form_pwd" type="password" name="password"><br/><br/>
     </div>
 
 
-    <button class="ui-shadow ui-btn ui-corner-all" type="submit">登录</button>
+    <button class="btn btn-raised btn-primary" type="submit">登录</button>
 </form>
 
 
@@ -40,7 +41,7 @@
 
   <div data-role="footer">
 <form action="/goregister" method="get">
-<button class="ui-shadow ui-btn ui-corner-all" type="submit">没有配置过打卡账号？去注册配置</button>
+<button class="btn btn-raised btn-primary" type="submit">没有配置过打卡账号？去注册配置</button>
 </form>
   </div>
 </div>
