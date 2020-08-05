@@ -2,7 +2,7 @@ import json
 
 import plyvel
 
-DB_LOCATION = "./db"
+DB_LOCATION = "./data/db"
 STUDENT_TABLE = "STUDENT_"
 STUDENT_CONFIG_TABLE = "CONFIG_TABLE_"
 DAKA_CALLBACK_INFO = "DAKA_CALLBACK_INFO_"
