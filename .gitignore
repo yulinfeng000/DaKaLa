@@ -1,4 +1,7 @@
 
+data/db/*
+data/db
+
 # Created by https://www.gitignore.io/api/pycharm
 # Edit at https://www.gitignore.io/?templates=pycharm
 
@@ -16,7 +19,7 @@
 # Generated files
 .idea/**/contentModel.xml
 
-static/db
+data/db
 static/vc_images/
 __pycache__
 

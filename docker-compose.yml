@@ -9,5 +9,6 @@ services:
       - 8888:5000
     volumes:
       - /usr/local/docker/dakala/data:/usr/local/dakala/static/
+      - /usr/local/docker/dakala/db:/usr/local/dakala/db/
     environment:
       SUPER_CODE: 536c0b339345616c1b33caf454454d8b8a190d6cX
