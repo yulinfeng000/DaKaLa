@@ -254,7 +254,7 @@ def dakanophoto(stuid):
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
     gen_log.info(f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
-    return "打卡成功", 200
+    return render_template("dakasucess.html")
 
 
 @app.route('/api/daka/nophoto/<stuid>', methods=['POST'])
