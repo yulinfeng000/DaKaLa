@@ -46,7 +46,7 @@
 - ios 端由于我没有开发者账号，所以需要借助 <b> altsotre </b> 或者 <b> impactor </b> 安装，具体使用请百度
 
 - [移动端项目地址](https://github.com/yulinfeng000/DaKaLa-mobile)
-- [app 下载地址](https://github.com/yulinfeng000/DaKaLa/releases)(虽退坑但仍可用)
+- ~~[app 下载地址](https://github.com/yulinfeng000/DaKaLa/releases)~~(~~虽退坑但仍可用~~)
 
 #### 声明 移动端没有实机测试，目前稳定性，适配度未知
 
