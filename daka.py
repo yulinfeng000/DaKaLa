@@ -129,10 +129,12 @@ def dakala(student, config):
         if config.__getitem__('application_location') is not None:
             application_location_elem = driver.find_element_by_name(
                 'sF21912_1')
+            application_location_elem.clear()
             application_location_elem.send_keys(config['application_location'])
 
         if config.__getitem__('application_reason') is not None:
             application_reason_elem = driver.find_element_by_name('sF21912_2')
+            application_reason_elem.clear()
             application_reason_elem.send_keys(config['application_reason'])
 
         # fill data into form
