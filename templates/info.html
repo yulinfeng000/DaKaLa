@@ -1,130 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>我的打卡面版</title>
-<link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
-<script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-<script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
+      integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+    <script
+      src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
+      integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+      integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(function () {
+        $("body").bootstrapMaterialDesign();
+      });
+    </script>
+  </head>
 
+  <body>
     <nav class="navbar navbar-light bg-light" data-role="header">
-    <h2 class="navbar-brand">我的打卡面版</h2>
+      <h2 class="navbar-brand">我的打卡面版</h2>
 
-  <a href="https://github.com/yulinfeng000/DaKaLa" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#ffffff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}  @keyframes octocat-wave{0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}  .github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+      <a
+        href="https://github.com/yulinfeng000/DaKaLa"
+        class="github-corner"
+        aria-label="View source on GitHub"
+        ><svg
+          width="80"
+          height="80"
+          viewBox="0 0 250 250"
+          style="
+            fill: #151513;
+            color: #ffffff;
+            position: absolute;
+            top: 0;
+            border: 0;
+            right: 0;
+          "
+          aria-hidden="true"
+        >
+          <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+          <path
+            d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+            fill="currentColor"
+            style="transform-origin: 130px 106px"
+            class="octo-arm"
+          ></path>
+          <path
+            d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+            fill="currentColor"
+            class="octo-body"
+          ></path></svg
+      ></a>
+      <style>
+        .github-corner:hover .octo-arm {
+          animation: octocat-wave 560ms ease-in-out;
+        }
 
+        @keyframes octocat-wave {
+          0%,
+          100% {
+            transform: rotate(0);
+          }
+
+          20%,
+          60% {
+            transform: rotate(-25deg);
+          }
+
+          40%,
+          80% {
+            transform: rotate(10deg);
+          }
+        }
+
+        @media (max-width: 500px) {
+          .github-corner:hover .octo-arm {
+            animation: none;
+          }
+
+          .github-corner .octo-arm {
+            animation: octocat-wave 560ms ease-in-out;
+          }
+        }
+      </style>
     </nav>
 
+    <div class="container" id="panel">
+      <p class="lead">
+        <small
+          >每天早上8点服务器会为各位自动打卡，请各位留意最新打卡图的序号，保证打卡成功
+        </small>
+      </p>
 
-<div  class="container" id="panel">
+      最近的一次打卡情况:
+      <h1>{{ callback }}</h1>
 
-        <p class="lead">
-            <small>每天早上8点服务器会为各位自动打卡，请各位留意最新打卡图的序号，保证打卡成功    </small>
-        </p>
+      <form action="/daka/{{ stuid }}" method="post">
+        <div class="ui-field-contain">
+          <button
+            class="btn btn-raised btn-primary"
+            id="daka_photo"
+            type="submit"
+          >
+            有图打卡
+          </button>
+          <label class="bmd-label-static" for="daka_photo"
+            >(需要等待较长时间！！！等待时请不要返回或则刷新！！！)</label
+          >
+        </div>
+      </form>
 
-    最近的一次打卡情况: <h1>{{ callback }}</h1>
+      <br />
 
-<form action="/daka/{{ stuid }}" method="post">
-     <div class="ui-field-contain">
-         <button class="btn btn-raised btn-primary"  id="daka_photo" type="submit">有图打卡</button>
-    <label class="bmd-label-static" for="daka_photo">(需要等待较长时间！！！等待时请不要返回或则刷新！！！)</label>
+      <form action="/daka/nophoto/{{ stuid }}" method="post">
+        <div class="ui-field-contain">
+          <button
+            class="btn btn-raised btn-primary"
+            id="daka_nophoto"
+            type="submit"
+          >
+            无图打卡
+          </button>
+          <label class="bmd-label-static" for="daka_nophoto"
+            >(若想查看最新的打卡图也需等待服务器生成)</label
+          >
+        </div>
+      </form>
+      <br />
+      <form action="/photo/{{ stuid }}" method="post">
+        <button class="btn btn-raised btn-primary" type="submit">
+          查看最新的打卡图
+        </button>
+      </form>
 
-     </div>
-</form>
+      <br />
+      <br />
 
-<br/>
+      <form action="/updateconfig" method="post" enctype="multipart/form-data">
+        <div class="ui-field-contain">
+          <input type="hidden" name="stuid" value="{{ stuid }}" />
+          <label class="bmd-label-static" for="form_stuid">学号</label>
+          <input
+            class="form-control"
+            id="form_stuid"
+            type="number"
+            name="stuid"
+            value="{{ stuid }}"
+          /><br /><br />
+        </div>
 
-<form action="/daka/nophoto/{{ stuid }}" method="post">
-     <div class="ui-field-contain">
+        <div class="ui-field-contain">
+          <p>
+            # 现居住地城市情况 1=> 一般地区 2=> 疫情防控重点地区 3=>
+            所在小区被隔离管控
+          </p>
+          <label class="bmd-label-static" for="form_cityStatus"
+            >现居住地城市情况
+          </label>
+          <input
+            class="form-control"
+            id="form_cityStatus"
+            type="text"
+            name="cityStatus"
+            value="{{ config.cityStatus }}"
+          /><br /><br />
+        </div>
 
-    <button class="btn btn-raised btn-primary" id="daka_nophoto" type="submit">无图打卡</button>
-         <label class="bmd-label-static" for="daka_nophoto">(若想查看最新的打卡图也需等待服务器生成)</label>
-     </div>
-</form>
-<br/>
-<form action="/photo/{{ stuid }}" method="post">
-    <button class="btn btn-raised btn-primary" type="submit">查看最新的打卡图</button>
-</form>
+        <div class="ui-field-contain">
+          <p>
+            # 今天工作状态 1 =>航空港校内上班或学习 2 =>龙泉校内上班或学习
+            3=>在校外完成实习任务 4 =>在校外 5=>在家
+          </p>
+          <label class="bmd-label-static" for="form_workingPlace"
+            >今天工作状态</label
+          >
+          <input
+            class="form-control"
+            id="form_workingPlace"
+            value="{{ config.workingPlace }}"
+            type="text"
+            name="workingPlace"
+          /><br /><br />
+        </div>
 
-<br/>
-<br/>
+        <div class="ui-field-contain">
+          <p>
+            # 个人健康状况 1 =>正常 2 =>有可疑症状 3=>疑似感染 4=>确诊感染 5
+            =>确诊感染但已康复
+          </p>
+          <label class="bmd-label-static" for="form_healthStatus"
+            >个人健康状况</label
+          >
+          <input
+            class="form-control"
+            id="form_healthStatus"
+            value="{{ config.healthStatus }}"
+            type="text"
+            name="healthStatus"
+          /><br /><br />
+        </div>
 
+        <div class="ui-field-contain">
+          <p>
+            # 个人生活状态 1 =>正常 3 =>居家隔离观察 4 =>集中隔离观察 5
+            =>居家治疗 2 =住院治疗
+          </p>
+          <label class="bmd-label-static" for="form_livingStatus"
+            >个人生活状态</label
+          >
+          <input
+            class="form-control"
+            id="form_livingStatus"
+            value="{{ config.livingStatus }}"
+            type="text"
+            name="livingStatus"
+          /><br /><br />
+        </div>
 
-<form action="/updateconfig" method="post" enctype="multipart/form-data">
+        <div class="ui-field-contain">
+          <p>
+            #家庭成员状况 1 =>全部正常 2 =>有人有可疑症状 3 =>有人疑似感染 4
+            =>有人确诊感染 5 =>有人确诊感染但已康复
+          </p>
+          <label class="bmd-label-static" for="form_homeStatus"
+            >家庭成员状况</label
+          >
+          <input
+            class="form-control"
+            id="form_homeStatus"
+            type="text"
+            name="homeStatus"
+            value="{{ config.homeStatus }}"
+          /><br /><br />
+        </div>
 
- <div class="ui-field-contain">
-    <input type="hidden" name="stuid" value="{{ stuid }}">
-    <label class="bmd-label-static" for="form_stuid">学号</label>
-    <input class="form-control" id="form_stuid" type="number" name="stuid" value="{{ stuid }}"><br/><br/>
- </div>
+        <div class="ui-field-contain">
+          <p>申请出校原因</p>
+          <label class="bmd-label-static" for="form_application_reason"
+            >申请出校原因</label
+          >
+          <input
+            class="form-control"
+            id="form_application_reason"
+            type="text"
+            name="application_reason"
+            value="{{ config.application_reason }}"
+          /><br /><br />
+        </div>
 
-     <div class="ui-field-contain">
-    <p># 现居住地城市情况 1=> 一般地区  2=> 疫情防控重点地区 3=> 所在小区被隔离管控</p>
-    <label class="bmd-label-static" for="form_cityStatus">现居住地城市情况 </label>
-    <input class="form-control" id="form_cityStatus" type="text" name="cityStatus" value="{{ config.cityStatus }}"><br/><br/>
-     </div>
+        <div class="ui-field-contain">
+          <p>申请出校的地点</p>
+          <label class="bmd-label-static" for="form_application_location"
+            >申请出校的地点</label
+          >
+          <input
+            class="form-control"
+            id="form_application_location"
+            type="text"
+            name="application_location"
+            value="{{ config.application_location }}"
+          /><br /><br />
+        </div>
 
-     <div class="ui-field-contain">
-    <p># 今天工作状态 1 =>航空港校内上班或学习 2 =>龙泉校内上班或学习 3=>在校外完成实习任务 4 =>在校外 5=>在家</p>
-    <label class="bmd-label-static" for="form_workingPlace">今天工作状态</label>
-    <input class="form-control" id="form_workingPlace" value="{{ config.workingPlace }}" type="text" name="workingPlace"><br/><br/>
-     </div>
+        <div class="ui-field-contain">
+          <p>申请出校的开始日</p>
+          <label class="bmd-label-static" for="form_application_start_day"
+            >申请出校的开始日</label
+          >
 
-     <div class="ui-field-contain">
-    <p># 个人健康状况 1 =>正常  2 =>有可疑症状  3=>疑似感染  4=>确诊感染  5 =>确诊感染但已康复</p>
-    <label class="bmd-label-static" for="form_healthStatus">个人健康状况</label>
-    <input class="form-control" id="form_healthStatus" value="{{ config.healthStatus }}" type="text" name="healthStatus"><br/><br/>
-     </div>
+          <select id="form_application_start_day" name="application_start_day">
+            <option value="{{ config.application_start_day }}">
+              {{ config.application_start_day }}
+            </option>
+            <option value="1">今天</option>
+            <option value="2">明天</option>
+            <option value="3">后天</option>
+          </select>
+          <br /><br />
+        </div>
 
-     <div class="ui-field-contain">
-    <p># 个人生活状态 1 =>正常 3 =>居家隔离观察 4 =>集中隔离观察 5 =>居家治疗 2 =住院治疗</p>
-    <label  class="bmd-label-static" for="form_livingStatus">个人生活状态</label>
-    <input class="form-control" id="form_livingStatus" value="{{ config.livingStatus }}" type="text" name="livingStatus"><br/><br/>
-     </div>
+        <div class="ui-field-contain">
+          <p>申请出校的开始时间</p>
+          <label class="bmd-label-static" for="form_application_start_time"
+            >申请出校的开始时间</label
+          >
+          <select
+            id="form_application_start_time"
+            name="application_start_time"
+          >
+            <option value="{{ config.application_start_time }}">
+              {{ config.application_start_time }}
+            </option>
+            <option value="06">06:00</option>
+            <option value="07">07:00</option>
+            <option value="08">08:00</option>
+            <option value="09">09:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+            <option value="18">18:00</option>
+            <option value="19">19:00</option>
+            <option value="20">20:00</option>
+            <option value="21">21:00</option>
+            <option value="22">22:00</option>
+          </select>
+          <br /><br />
+        </div>
 
-     <div class="ui-field-contain">
-    <p>#家庭成员状况 1 =>全部正常 2 =>有人有可疑症状 3 =>有人疑似感染 4 =>有人确诊感染 5 =>有人确诊感染但已康复</p>
-    <label class="bmd-label-static" for="form_homeStatus">家庭成员状况</label>
-    <input class="form-control" id="form_homeStatus" type="text" name="homeStatus" value="{{ config.homeStatus }}"><br/><br/>
-     </div>
+        <div class="ui-field-contain">
+          <p>申请出校的回校日</p>
+          <label class="bmd-label-static" for="form_application_end_day"
+            >申请出校的回校日</label
+          >
+          <select id="form_application_end_day" name="application_end_day">
+            <option value="{{ config.application_start_day }}">
+              {{ config.application_start_day }}
+            </option>
+            <option value="1">当天</option>
+            <option value="2">第2天</option>
+            <option value="3">第3天</option>
+          </select>
+        </div>
 
-    <button  class="btn btn-raised btn-primary" type="submit">更新配置</button>
+        <div class="ui-field-contain">
+          <p>申请出校的回校时间</p>
+          <label class="bmd-label-static" for="form_application_end_time"
+            >申请出校的开始时间</label
+          >
+          <select id="form_application_end_time" name="application_end_time">
+            <option value="{{ config.application_end_time }}">
+              {{ config.application_end_time }}
+            </option>
+            <option value="07">07:00</option>
+            <option value="08">08:00</option>
+            <option value="09">09:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+            <option value="18">18:00</option>
+            <option value="19">19:00</option>
+            <option value="20">20:00</option>
+            <option value="21">21:00</option>
+            <option value="22">22:00</option>
+            <option value="23">23:00</option>
+          </select>
+        </div>
 
-</form>
-<br/>
-<br/>
-<br/>
-<br/>
+        <button class="btn btn-raised btn-primary" type="submit">
+          更新配置
+        </button>
+      </form>
+      <br />
+      <br />
+      <br />
+      <br />
 
+      <hr />
+      <br />
+      <table>
+        <td>
+          <form action="/delete" method="post">
+            <input
+              class="form-control"
+              type="hidden"
+              name="stuid"
+              value="{{ stuid }}"
+            />
+            <button class="btn btn-raised btn-primary" type="submit">
+              删除我的信息
+            </button>
+          </form>
+        </td>
 
-<hr/>
-<br/>
-<table>
+        <td>
+          <form action="/quit" method="post" style="float: left">
+            <input
+              class="form-control"
+              type="hidden"
+              name="stuid"
+              value="{{ stuid }}"
+            />
+            <button class="btn btn-raised btn-primary" type="submit">
+              退出登录
+            </button>
+          </form>
+        </td>
+      </table>
+    </div>
+  </body>
 
-    <td>
-        <form action="/delete" method="post">
-            <input class="form-control" type="hidden" name="stuid" value="{{ stuid }}">
-            <button  class="btn btn-raised btn-primary" type="submit">删除我的信息</button>
-        </form>
-    </td>
-
-    <td>
-         <form action="/quit" method="post" style="float:left; ">
-            <input class="form-control" type="hidden" name="stuid" value="{{ stuid }}">
-            <button  class="btn btn-raised btn-primary" type="submit">退出登录</button>
-        </form>
-    </td>
-</table>
-
-</div>
-</body>
-
-
-
-<style>
-</style>
+  <style></style>
 </html>

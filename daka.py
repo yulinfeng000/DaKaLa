@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 import userdb
 from selenium import webdriver
 from selenium.common.exceptions import \
@@ -26,7 +27,7 @@ def dakala(student, config):
     mobileEmulation = {'deviceName': 'iPhone X'}
     options = webdriver.ChromeOptions()
     options.add_argument('--disable-gpu')  # 谷歌文档提到需要加上这个属性来规避bug
-    # options.add_argument('headless')
+    options.add_argument('headless')
     # options.add_argument('--no-sandbox')
     options.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片, 提升速度
     options.add_experimental_option('mobileEmulation', mobileEmulation)
@@ -87,7 +88,8 @@ def dakala(student, config):
         """
 
         # stu_daka_url = f'{DAKA_URL}{STU_ID}&Id={}'
-        driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
+        driver.get(
+            "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
         # time.sleep(1)
         # n = driver.window_handles  # 这个时候会生成一个新窗口或新标签页的句柄，代表这个窗口的模拟driver
         # print('当前句柄: ', n)  # 会打印所有的句柄
@@ -97,6 +99,41 @@ def dakala(student, config):
         # gen_log.warning(linkList[1].get_attribute('href'))
 
         linkList[0].click()
+
+        # new feature
+        # auto application in-out school
+
+        if config.__getitem__('application_start_day') is not None:
+            application_start_day_elem = driver.find_element_by_name(
+                'sF21912_3')
+            Select(application_start_day_elem).select_by_value(
+                config['application_start_day'])
+
+        if config.__getitem__('application_start_time') is not None:
+            application_start_time_elem = driver.find_element_by_name(
+                'sF21912_4')
+            Select(application_start_time_elem).select_by_value(
+                config['application_start_time'])
+
+        if config.__getitem__('application_end_day') is not None:
+            application_end_day_elem = driver.find_element_by_name('sF21912_5')
+            Select(application_end_day_elem).select_by_value(
+                config['application_end_day'])
+
+        if config.__getitem__('application_end_time') is not None:
+            application_end_time_elem = driver.find_element_by_name(
+                'sF21912_6')
+            Select(application_end_time_elem).select_by_value(
+                config['application_end_time'])
+
+        if config.__getitem__('application_location') is not None:
+            application_location_elem = driver.find_element_by_name(
+                'sF21912_1')
+            application_location_elem.send_keys(config['application_location'])
+
+        if config.__getitem__('application_reason') is not None:
+            application_reason_elem = driver.find_element_by_name('sF21912_2')
+            application_reason_elem.send_keys(config['application_reason'])
 
         # fill data into form
         city_status = driver.find_element_by_name("sF21650_5")
@@ -119,7 +156,8 @@ def dakala(student, config):
             alert_window = driver.switch_to.alert
             alert_window.accept()
         except NoAlertPresentException:
-            logger.warning(f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+            logger.warning(
+                f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
             form_body = WebDriverWait(driver, 2).until(
                 EC.presence_of_element_located((By.TAG_NAME, "form"))
             )
@@ -127,7 +165,8 @@ def dakala(student, config):
             # form_body = driver.find_element_by_tag_name("form")
             vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
             form_body.screenshot(vc_image_path)
-            logger.info(f"{STU_ID} 打卡： 确认窗口未弹出但打卡成功并已经截图,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+            logger.info(
+                f"{STU_ID} 打卡： 确认窗口未弹出但打卡成功并已经截图,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
             userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
 
         # get screenshot
@@ -142,13 +181,16 @@ def dakala(student, config):
         vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
         form_body.screenshot(vc_image_path)
         userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
-        logger.info(f"{STU_ID}: 打卡成功,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+        logger.info(
+            f"{STU_ID}: 打卡成功,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
         # print(os.path.dirname(os.path.abspath(vc_image_path)))
         # close browser window
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
-        logger.warning(f'学号 {STU_ID} , 打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+        logger.warning(
+            f'学号 {STU_ID} , 打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
         # userdb.db_delete_user_info(STU_ID)
-        userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+        userdb.db_put_dk_callback_info(
+            STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
     finally:
         driver.close()
         driver.quit()

@@ -70,7 +70,8 @@ def hello_world():
     if ck_info is None:
         ck_info = "还没在服务器上打过卡呢"
     stu_config = userdb.db_get_user_config(stuid)
-    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info, config=stu_config))
+    resp = Response(render_template('info.html', stuid=stuid,
+                                    callback=ck_info, config=stu_config))
     resp.set_cookie("stuid", stuid, max_age=60 * 60 * 24 * 7)
     resp.set_cookie("password", cok_password, max_age=60 * 60 * 24 * 7)
     return resp
@@ -78,8 +79,15 @@ def hello_world():
 
 @app.route("/updateconfig", methods=['POST'])
 def updateConfig():
-    required = ['stuid', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
+    required = [
+        'stuid', 'cityStatus', 'workingPlace', 'healthStatus',
+        'livingStatus', 'homeStatus', 'application_location',
+        'application_reason', 'application_start_time',
+        'application_start_day', 'application_end_day',
+        'application_end_time'
+    ]
     values = request.form
+
     if not all(k in values for k in required):
         resp = Response('有必要信息未填写')
         resp.status_code = 403
@@ -91,7 +99,14 @@ def updateConfig():
         'livingStatus': values.get('livingStatus'),
         'healthStatus': values.get('healthStatus'),
         'workingPlace': values.get('workingPlace'),
-        'cityStatus': values.get('cityStatus')
+        'cityStatus': values.get('cityStatus'),
+        'application_location': values.get('application_location'),
+        'application_reason': values.get('application_reason'),
+        'application_start_time': values.get('application_start_time'),
+        'application_start_day': values.get('application_start_day'),
+        'application_end_day': values.get('application_end_day'),
+        'application_end_time': values.get('application_end_time')
+
     }
     userdb.db_put_user_config(stuid, config)
     return redirect("/")
@@ -99,7 +114,8 @@ def updateConfig():
 
 @app.route('/api/register', methods=['POST'])
 def api_register():
-    required = ['stuid', 'password', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
+    required = ['stuid', 'password', 'cityStatus', 'workingPlace',
+                'healthStatus', 'livingStatus', 'homeStatus']
     values = request.json
 
     if not all(k in values for k in required):
@@ -113,7 +129,7 @@ def api_register():
         'livingStatus': values.get('livingStatus'),
         'healthStatus': values.get('healthStatus'),
         'workingPlace': values.get('workingPlace'),
-        'cityStatus': values.get('cityStatus')
+        'cityStatus': values.get('cityStatus'),
     }
     userdb.db_put_user_info(stuid, password)
     userdb.db_put_user_config(stuid, config)
@@ -154,7 +170,8 @@ def login():
     user_ip = request.remote_addr
     userdb.db_put_user_ip(stuid, user_ip)  # 更新你的上次登录ip
     stu_config = userdb.db_get_user_config(stuid)
-    resp = Response(render_template('info.html', stuid=stuid, callback=ck_info, config=stu_config))
+    resp = Response(render_template('info.html', stuid=stuid,
+                                    callback=ck_info, config=stu_config))
     resp.set_cookie("stuid", stuid, max_age=60 * 60 * 24 * 7)
     resp.set_cookie('password', input_password)
     return resp
@@ -167,7 +184,8 @@ def go_register():
 
 @app.route("/register", methods=['POST'])
 def do_register():
-    required = ['stuid', 'password', 'cityStatus', 'workingPlace', 'healthStatus', 'livingStatus', 'homeStatus']
+    required = ['stuid', 'password', 'cityStatus', 'workingPlace',
+                'healthStatus', 'livingStatus', 'homeStatus']
     values = request.form
     if not all(k in values for k in required):
         return 'Missing values', 403
@@ -185,7 +203,8 @@ def do_register():
 
     resp = Response(render_template('success.html'))
     resp.set_cookie("stuid", stuid)
-    gen_log.info(f"学号 {stuid} , 浏览器注册成功,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    gen_log.info(
+        f"学号 {stuid} , 浏览器注册成功,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return resp
 
 
@@ -218,7 +237,8 @@ def del_info():
         os.remove(stu_img_path)
     resp = Response("<h1>delete success</h1>")
     resp.delete_cookie("stuid")
-    gen_log.warning(f"学号 {stuid} ,通过浏览器删除了自己信息,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    gen_log.warning(
+        f"学号 {stuid} ,通过浏览器删除了自己信息,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return resp, 200
 
 
@@ -235,7 +255,8 @@ def api_del_info(stuid):
 @app.route('/photo/<stuid>', methods=['POST'])
 def photo(stuid):
     vc_path = f'{stuid}_img.png'
-    random_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(3))
+    random_str = ''.join(random.choice(
+        string.ascii_uppercase + string.digits) for _ in range(3))
     return render_template('photo.html', img_src=vc_path, random=random_str)
 
 
@@ -253,7 +274,8 @@ def dakanophoto(stuid):
     t_pool.submit(daka_worker, stuid)
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
-    gen_log.info(f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    gen_log.info(
+        f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return render_template("dakasucess.html")
 
 
@@ -267,13 +289,15 @@ def api_dakanophoto(stuid):
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
     t_pool.submit(daka_worker, stuid)
-    gen_log.info(f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    gen_log.info(
+        f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return "打卡成功", 200
 
 
 @app.route('/daka/<stuid>', methods=['POST'])
 def daka(stuid):
-    gen_log.info(f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    gen_log.info(
+        f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     task = t_pool.submit(daka_worker, stuid)
     while not task.done():
         time.sleep(1)
@@ -289,7 +313,8 @@ def daka(stuid):
 
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
 def cycle_daka():
-    gen_log.info(f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    gen_log.info(
+        f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     mylist = userdb.find_all_user()
     for stu in mylist:
         t_pool.submit(daka_worker, stu['stuid'])
@@ -301,7 +326,8 @@ def cycle_daka():
 
 @app.route('/admin/daka/all', methods=['GET'])
 def admin_command_daka():
-    gen_log.info(f'超级管理员手动全局打卡执行，时间为{datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+    gen_log.info(
+        f'超级管理员手动全局打卡执行，时间为{datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
     supercode = request.values.get("supercode")
     if supercode is None:
         return "YOU DONT CONFIG SUPER DAKA COMMAND!", 404
