@@ -113,8 +113,6 @@ def updateConfig():
         else None,
     }
 
-    print(config)
-
     userdb.db_put_user_config(stuid, config)
     return redirect("/")
 
