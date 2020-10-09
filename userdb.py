@@ -56,11 +56,11 @@ def db_get_user_by_stuid(stuid):
     return get_object(f'{STUDENT_TABLE}{stuid}')
 
 
-def db_put_user_config(stuid, conf):
+def db_put_user_config(stuid, conf:dict):
     put_object(f'{STUDENT_CONFIG_TABLE}{stuid}', conf)
 
 
-def db_get_user_config(stuid):
+def db_get_user_config(stuid) -> dict:
     return get_object(f'{STUDENT_CONFIG_TABLE}{stuid}')
 
 
@@ -95,4 +95,6 @@ def db_get_user_last_ip(stuid):
 
 if __name__ == '__main__':
     print(find_all_user())
+    db_put_user_config('123456',{'123asdf':123})
     print(db_get_user_config('123456'))
+    print(db_get_user_config('123456').get('123123'))

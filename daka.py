@@ -15,7 +15,7 @@ DAKA_URL = "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/editSj.asp?UTp=Xs&Tx=33_1
 logger = logging.getLogger(__file__)
 
 
-def dakala(student, config):
+def dakala(student, config:dict):
     # print(student, config)
     STU_ID = student['stuid']
     STU_PASSWD = student['password']
@@ -58,36 +58,7 @@ def dakala(student, config):
         )
         login_submit_btn.click()
 
-        # username_input = driver.find_element_by_id("txtId")
-        # password_input = driver.find_element_by_id("txtMM")
-        # login_submit_btn = driver.find_element_by_id("IbtnEnter")
-
-        """
-        vc_input       = driver.find_element_by_id("txtVC")
-        vc_img         = driver.find_element_by_id("verifypic")
-        """
-
-        # clean and input value
-        # username_input.clear()
-        # username_input.value = STU_ID
-        # username_input.send_keys(STU_ID)
-        # password_input.clear()
-        # password_input.send_keys(STU_PASSWD)
-        # password_input.value = STU_PASSWD
-        # time.sleep(1)
-        # submit
-        # login_submit_btn.click()
-        """
-       
-        a_tag_list = driver.find_elements_by_tag_name("a")
-        for link in a_tag_list:
-            if link.get_attribute("href").count('jkdk=Y') > 0:
-                link.click()
-                break
-
-        """
-
-        # stu_daka_url = f'{DAKA_URL}{STU_ID}&Id={}'
+        
         driver.get(
             "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
         # time.sleep(1)
@@ -103,36 +74,36 @@ def dakala(student, config):
         # new feature
         # auto application in-out school
 
-        if config.__getitem__('application_start_day') is not None:
+        if config.get('application_start_day') is not None:
             application_start_day_elem = driver.find_element_by_name(
                 'sF21912_3')
             Select(application_start_day_elem).select_by_value(
                 config['application_start_day'])
 
-        if config.__getitem__('application_start_time') is not None:
+        if config.get('application_start_time') is not None:
             application_start_time_elem = driver.find_element_by_name(
                 'sF21912_4')
             Select(application_start_time_elem).select_by_value(
                 config['application_start_time'])
 
-        if config.__getitem__('application_end_day') is not None:
+        if config.get('application_end_day') is not None:
             application_end_day_elem = driver.find_element_by_name('sF21912_5')
             Select(application_end_day_elem).select_by_value(
                 config['application_end_day'])
 
-        if config.__getitem__('application_end_time') is not None:
+        if config.get('application_end_time') is not None:
             application_end_time_elem = driver.find_element_by_name(
                 'sF21912_6')
             Select(application_end_time_elem).select_by_value(
                 config['application_end_time'])
 
-        if config.__getitem__('application_location') is not None:
+        if config.get('application_location') is not None:
             application_location_elem = driver.find_element_by_name(
                 'sF21912_1')
             application_location_elem.clear()
             application_location_elem.send_keys(config['application_location'])
 
-        if config.__getitem__('application_reason') is not None:
+        if config.get('application_reason') is not None:
             application_reason_elem = driver.find_element_by_name('sF21912_2')
             application_reason_elem.clear()
             application_reason_elem.send_keys(config['application_reason'])
