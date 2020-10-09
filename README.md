@@ -29,10 +29,32 @@
 
 ## Docker 部署
 
-1. 前提: docker 环境 (包括 docker, docker-compose)
-2. 运行： base_image 文件夹下运行 base_build.sh 脚本 构建基本镜像
-3. 运行: 主文件夹下运行`sh build.sh` 等待镜像构建完成
-4. 运行: `docker-compose up -d` (可自行修改 docker-compose.yml 文件自定义)
+- 现成镜像
+
+    docker-compose.yml 文件
+    
+    ```yaml
+    version: "2.2"
+    services:
+      dakala:
+        image: yulinfeng/dakala:latest
+        init: true
+        container_name: dakala
+        restart: always
+        ports:
+          - 8888:5000   # 容器对外暴露端口的映射
+        environment:
+          SUPER_CODE: 536c0b33 # 管理员手动全局打卡密钥,随意填写
+    ```
+
+- 自行编译docker镜像
+    1. 前提: docker 环境 (包括 docker, docker-compose)
+    2. 运行： base_image 文件夹下运行 base_build.sh 脚本 构建基本镜像
+    3. 运行: 主文件夹下运行`sh build.sh` 等待镜像构建完成
+    4. 运行: `docker-compose up -d` (可自行修改 docker-compose.yml 文件自定义)
+
+
+
 
 # 网页端（主推）
 
