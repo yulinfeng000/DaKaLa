@@ -94,6 +94,7 @@ def updateConfig():
         return resp
 
     stuid = values.get('stuid')
+
     config = {
         'homeStatus': values.get('homeStatus'),
         'livingStatus': values.get('livingStatus'),
@@ -102,12 +103,18 @@ def updateConfig():
         'cityStatus': values.get('cityStatus'),
         'application_location': values.get('application_location'),
         'application_reason': values.get('application_reason'),
-        'application_start_time': values.get('application_start_time'),
-        'application_start_day': values.get('application_start_day'),
-        'application_end_day': values.get('application_end_day'),
-        'application_end_time': values.get('application_end_time')
-
+        'application_start_time': values.get('application_start_time') if values.get('application_start_time') != 'None'
+        else None,
+        'application_start_day': values.get('application_start_day') if values.get('application_start_day') != 'None'
+        else None,
+        'application_end_day': values.get('application_end_day') if values.get('application_end_day') != 'None'
+        else None,
+        'application_end_time': values.get('application_end_time') if values.get('application_end_time') != 'None'
+        else None,
     }
+
+    print(config)
+
     userdb.db_put_user_config(stuid, config)
     return redirect("/")
 

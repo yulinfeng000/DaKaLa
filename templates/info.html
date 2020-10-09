@@ -283,20 +283,19 @@
           <select id="form_application_start_day" name="application_start_day">
             <option value="{{ config.application_start_day }}">
               {% if config.application_start_day == '1' %}
-                    今天
-                {% endif %}
-
-              {% if config.application_start_day == '2' %}
-                    明天
-                {% endif %}
-
-            {% if config.application_start_day == '3' %}
-                    后天
-                {% endif %}
+                  今天
+                {% elif config.application_start_day == '2' %}
+                  明天
+                {% elif config.application_start_day == '3' %}
+                  后天
+                {% elif config.application_start_day == None %}
+                  {{ ' ' }}
+              {% endif %}
             </option>
             <option value="1">今天</option>
             <option value="2">明天</option>
             <option value="3">后天</option>
+            <option value="None"> </option>
           </select>
           <br /><br />
         </div>
@@ -311,8 +310,13 @@
             name="application_start_time"
           >
             <option value="{{ config.application_start_time }}">
-              {{ config.application_start_time }}
+              {%  if config.application_start_time == None %}
+                    {{ ' ' }}
+              {% else %}
+                    {{ config.application_start_time }}
+              {% endif %}
             </option>
+
             <option value="06">06:00</option>
             <option value="07">07:00</option>
             <option value="08">08:00</option>
@@ -330,6 +334,7 @@
             <option value="20">20:00</option>
             <option value="21">21:00</option>
             <option value="22">22:00</option>
+            <option value="None"> </option>
           </select>
           <br /><br />
         </div>
@@ -341,21 +346,20 @@
           >
           <select id="form_application_end_day" name="application_end_day">
             <option value="{{ config.application_end_day }}">
-                {% if config.application_end_day == '1' %}
-                    当天
-                {% endif %}
-
-              {% if config.application_end_day == '2' %}
-                    第2天
-                {% endif %}
-
-                {% if config.application_end_day == '3' %}
-                    第3天
-                {% endif %}
+              {% if config.application_end_day == '1' %}
+                  当天
+              {% elif config.application_end_day == '2' %}
+                  第2天
+              {% elif config.application_end_day == '3' %}
+                  第3天
+              {% elif config.application_end_day == None %}
+                  {{ '' }}
+              {% endif %}
             </option>
             <option value="1">当天</option>
             <option value="2">第2天</option>
             <option value="3">第3天</option>
+            <option value="None"> </option>
           </select>
         </div>
 
@@ -366,7 +370,11 @@
           >
           <select id="form_application_end_time" name="application_end_time">
             <option value="{{ config.application_end_time }}">
-              {{ config.application_end_time }}
+              {% if config.application_end_time == None %}
+                {{ ' ' }}
+                {% else %}
+                {{ config.application_end_time }}
+                {% endif %}
             </option>
             <option value="07">07:00</option>
             <option value="08">08:00</option>
@@ -385,6 +393,7 @@
             <option value="21">21:00</option>
             <option value="22">22:00</option>
             <option value="23">23:00</option>
+            <option value="None"> </option>
           </select>
         </div>
 

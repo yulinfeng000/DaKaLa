@@ -51,8 +51,8 @@ def dakala(student, config:dict):
         password_input = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "txtMM"))
         )
-        password_input.send_keys(STU_PASSWD)
 
+        password_input.send_keys(STU_PASSWD)
         login_submit_btn = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "IbtnEnter"))
         )
