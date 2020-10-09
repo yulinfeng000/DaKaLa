@@ -282,7 +282,17 @@
 
           <select id="form_application_start_day" name="application_start_day">
             <option value="{{ config.application_start_day }}">
-              {{ config.application_start_day }}
+              {% if config.application_start_day == '1' %}
+                    今天
+                {% endif %}
+
+              {% if config.application_start_day == '2' %}
+                    明天
+                {% endif %}
+
+            {% if config.application_start_day == '3' %}
+                    后天
+                {% endif %}
             </option>
             <option value="1">今天</option>
             <option value="2">明天</option>
@@ -330,8 +340,18 @@
             >申请出校的回校日</label
           >
           <select id="form_application_end_day" name="application_end_day">
-            <option value="{{ config.application_start_day }}">
-              {{ config.application_start_day }}
+            <option value="{{ config.application_end_day }}">
+                {% if config.application_end_day == '1' %}
+                    当天
+                {% endif %}
+
+              {% if config.application_end_day == '2' %}
+                    第2天
+                {% endif %}
+
+                {% if config.application_end_day == '3' %}
+                    第3天
+                {% endif %}
             </option>
             <option value="1">当天</option>
             <option value="2">第2天</option>
