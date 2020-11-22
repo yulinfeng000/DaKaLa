@@ -2,6 +2,7 @@ import os
 import random
 import string
 import time
+
 from flask import Flask, request, render_template, Response, redirect
 import userdb
 from daka import dakala
@@ -37,7 +38,6 @@ def add_header(r):
 
 @app.route('/', methods=['GET'])
 def hello_world():
-    app_logger.info("asdf")
     user_ip = request.remote_addr
     cok = request.cookies
     stuid = cok.get("stuid")
@@ -354,5 +354,11 @@ def admin_command_daka():
 
 
 if __name__ == '__main__':
+    from multiprocessing import cpu_count
+    import tornado.ioloop
     scheduler.start()
-    app.run("0.0.0.0", 5000)
+    http_server.bind(5000,"0.0.0.0")
+
+    http_server.start(cpu_count(),max_restarts=5)
+    tornado.ioloop.IOLoop.current().start()
+    # app.run("0.0.0.0", 5000,debug=False)

@@ -6,11 +6,15 @@ RUN mkdir -p /usr/local/dakala/templates
 
 RUN mkdir -p /usr/local/dakala/static/vc_images
 
+RUN mkdir -p /usr/local/dakala/static/js
+
 RUN mkdir -p /usr/local/dakala/data/log
 
 RUN mkdir -p /usr/local/dakala/data/db
 
 WORKDIR /usr/local/dakala
+
+COPY ./static/js/* ./static/js/
 
 COPY ./logsetting.py ./logsetting.py
 
