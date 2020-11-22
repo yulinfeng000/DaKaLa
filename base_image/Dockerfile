@@ -3,7 +3,7 @@ FROM selenium/standalone-chrome
 USER root
 
 COPY ./get-pip.py ./get-pip.py
-COPY ./requirements.txt ./requirements.txt
+COPY ../requirements.txt ./requirements.txt
 
 RUN   sed -i "s/\/\/.*archive.ubuntu.com/\/\/mirrors.aliyun.com/g;s/\/\/.*security.ubuntu.com/\/\/mirrors.aliyun.com/g" /etc/apt/sources.list
 
