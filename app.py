@@ -1,20 +1,21 @@
+import os
 import random
 import string
-from logsetting import gen_log  # 不能删！！
 import time
 from flask import Flask, request, render_template, Response, redirect
 import userdb
 from daka import dakala
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
 from flask_apscheduler import APScheduler
 from concurrent.futures import ThreadPoolExecutor
-import os
 from datetime import timedelta
 import datetime
+from logsetting import logger
 
-app = Flask(__name__, static_folder='./static')
+app = Flask(__name__, static_folder=os.path.abspath('./static/'))
+app_logger = logger
+
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
@@ -36,6 +37,7 @@ def add_header(r):
 
 @app.route('/', methods=['GET'])
 def hello_world():
+    app_logger.info("asdf")
     user_ip = request.remote_addr
     cok = request.cookies
     stuid = cok.get("stuid")
@@ -84,10 +86,11 @@ def updateConfig():
         'livingStatus', 'homeStatus', 'application_location',
         'application_reason', 'application_start_time',
         'application_start_day', 'application_end_day',
-        'application_end_time'
+        'application_end_time', "scheduler_time_segment",
+        "scheduler_start_time"
     ]
     values = request.form
-
+    print(values)
     if not all(k in values for k in required):
         resp = Response('有必要信息未填写')
         resp.status_code = 403
@@ -110,6 +113,10 @@ def updateConfig():
         'application_end_day': values.get('application_end_day') if values.get('application_end_day') != 'None'
         else None,
         'application_end_time': values.get('application_end_time') if values.get('application_end_time') != 'None'
+        else None,
+        "scheduler_time_segment": values.get("scheduler_time_segment") if values.get('scheduler_time_segment') != ''
+        else None,
+        "scheduler_start_time": values.get("scheduler_start_time") if values.get("scheduler_start_time") != ''
         else None,
     }
 
@@ -140,7 +147,7 @@ def api_register():
     userdb.db_put_user_config(stuid, config)
 
     resp = Response('成功', 200)
-    gen_log.info(f'学号 {stuid} , 移动端注册成功')
+    app_logger.info(f'学号 {stuid} , 移动端注册成功')
     return resp
 
 
@@ -208,7 +215,7 @@ def do_register():
 
     resp = Response(render_template('success.html'))
     resp.set_cookie("stuid", stuid)
-    gen_log.info(
+    app_logger.info(
         f"学号 {stuid} , 浏览器注册成功,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return resp
 
@@ -242,7 +249,7 @@ def del_info():
         os.remove(stu_img_path)
     resp = Response("<h1>delete success</h1>")
     resp.delete_cookie("stuid")
-    gen_log.warning(
+    app_logger.warning(
         f"学号 {stuid} ,通过浏览器删除了自己信息,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return resp, 200
 
@@ -253,7 +260,7 @@ def api_del_info(stuid):
     stu_img_path = os.path.abspath(f'./static/vc_images/{stuid}_img.png')
     if os.path.exists(stu_img_path):
         os.remove(stu_img_path)
-    gen_log.warning(f'学号 {stuid} ,通过移动端删除了自己信息')
+    app_logger.warning(f'学号 {stuid} ,通过移动端删除了自己信息')
     return "success", 200
 
 
@@ -279,7 +286,7 @@ def dakanophoto(stuid):
     t_pool.submit(daka_worker, stuid)
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
-    gen_log.info(
+    app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return render_template("dakasucess.html")
 
@@ -294,14 +301,14 @@ def api_dakanophoto(stuid):
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
     t_pool.submit(daka_worker, stuid)
-    gen_log.info(
+    app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return "打卡成功", 200
 
 
 @app.route('/daka/<stuid>', methods=['POST'])
 def daka(stuid):
-    gen_log.info(
+    app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     task = t_pool.submit(daka_worker, stuid)
     while not task.done():
@@ -318,7 +325,7 @@ def daka(stuid):
 
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
 def cycle_daka():
-    gen_log.info(
+    app_logger.info(
         f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     mylist = userdb.find_all_user()
     for stu in mylist:
@@ -331,7 +338,7 @@ def cycle_daka():
 
 @app.route('/admin/daka/all', methods=['GET'])
 def admin_command_daka():
-    gen_log.info(
+    app_logger.info(
         f'超级管理员手动全局打卡执行，时间为{datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
     supercode = request.values.get("supercode")
     if supercode is None:
@@ -348,5 +355,4 @@ def admin_command_daka():
 
 if __name__ == '__main__':
     scheduler.start()
-    http_server.listen(5000, "0.0.0.0")
-    IOLoop.instance().start()
+    app.run("0.0.0.0", 5000)

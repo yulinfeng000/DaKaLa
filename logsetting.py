@@ -1,11 +1,4 @@
-import logging
-from tornado.log import gen_log, app_log, access_log
+from loguru import logger
 import os
 
-log_file_path = os.path.abspath('./data/log/main.log')
-logging.basicConfig(level=logging.INFO, filename=log_file_path)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler = logging.StreamHandler()
-gen_log.addHandler(console_handler)
-app_log.addHandler(console_handler)
-access_log.addHandler(console_handler)
+logger.add(os.path.abspath("./data/log/main.log"), rotation="1 week", compression="zip", enqueue=True)

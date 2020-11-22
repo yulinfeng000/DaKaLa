@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>我的打卡面版</title>
+       <script src="/static/js/rolldate.min.js"></script>
     <link
       rel="stylesheet"
       href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
@@ -275,9 +276,41 @@
         </div>
 
         <div class="ui-field-contain">
-          <p>申请出校的开始日</p>
+             从
+
+            <div  onfocus="tp.show()" onblur="tp.hide()">
+                {% if config.scheduler_start_time %}
+                    <input id="scheduler-time-picker" readonly=""  type="text" placeholder="选择时间" name="scheduler_start_time" value="{{ config.scheduler_start_time  }}" />
+                {% else %}
+                    <input id="scheduler-time-picker" readonly=""  type="text" placeholder="选择时间" name="scheduler_start_time" />
+                {% endif %}
+            </div>
+            开始
+            <br/>
+            每
+
+
+            <br/>
+            {% if config.scheduler_time_segment %}
+                <input type="number" name="scheduler_time_segment" value="{{ config.scheduler_time_segment }}" />
+            {% else %}
+                <input type="number" name="scheduler_time_segment" />
+            {% endif %}
+            <br/>
+            天
+            申请出一次校
+            <br />
+            <label class="bmd-label-static" for="form_application_location"
+            >间隔天数小于等于0都视为一次性预约申请</label
+          >
+        </div>
+        <br/>
+
+
+        <div class="ui-field-contain">
+          <p>申请出校日</p>
           <label class="bmd-label-static" for="form_application_start_day"
-            >申请出校的开始日</label
+            >申请出校日</label
           >
 
           <select id="form_application_start_day" name="application_start_day">
@@ -440,5 +473,26 @@
     </div>
   </body>
 
-  <style></style>
+  <script>
+    var tp = new Rolldate({
+    el:"#scheduler-time-picker",
+    format: 'YYYY-MM-DD',
+    beginYear: 2000,
+    endYear: 2100,
+
+        trigger:'tap',
+    tapBefore: function(el) {
+        console.log('插件开始触发');
+    },
+    moveEnd: function(el, iscroll) {
+        console.log('滚动结束');
+    },
+    confirmBefore: function(el, date) {
+        console.log('确定按钮触发');
+    },
+    confirmEnd: function(el, date) {
+        console.log('插件运行结束');
+    }
+})
+  </script>
 </html>

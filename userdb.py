@@ -1,12 +1,13 @@
 import json
-
+import os
 import plyvel
 
-DB_LOCATION = "./data/db"
+DB_LOCATION = os.path.abspath("./data/db")
 STUDENT_TABLE = "STUDENT_"
 STUDENT_CONFIG_TABLE = "CONFIG_TABLE_"
 DAKA_CALLBACK_INFO = "DAKA_CALLBACK_INFO_"
 USER_IP = "USER_IP_"
+LAST_SCHEDULER_EXEC_TIME = "LAST_SCHEDULER_EXEC_TIME_"
 
 db = plyvel.DB(DB_LOCATION, create_if_missing=True)
 
@@ -56,7 +57,7 @@ def db_get_user_by_stuid(stuid):
     return get_object(f'{STUDENT_TABLE}{stuid}')
 
 
-def db_put_user_config(stuid, conf:dict):
+def db_put_user_config(stuid, conf: dict):
     put_object(f'{STUDENT_CONFIG_TABLE}{stuid}', conf)
 
 
@@ -77,6 +78,14 @@ def db_get_dk_callback_info(stuid):
     return get_value(f'{DAKA_CALLBACK_INFO}{stuid}')
 
 
+def db_put_last_scheduler_exec_time(stuid, time: str):
+    put_value(f'{DAKA_CALLBACK_INFO}{stuid}', time)
+
+
+def db_get_last_scheduler_exec_time(stuid):
+    return get_value(f'{DAKA_CALLBACK_INFO}{stuid}')
+
+
 def find_all_user():
     itor = db.iterator(prefix=KEY(f'{STUDENT_TABLE}'))
     res = []
@@ -91,10 +100,3 @@ def db_put_user_ip(stuid, ip):
 
 def db_get_user_last_ip(stuid):
     return get_value(f'{USER_IP}{stuid}')
-
-
-if __name__ == '__main__':
-    print(find_all_user())
-    db_put_user_config('123456',{'123asdf':123})
-    print(db_get_user_config('123456'))
-    print(db_get_user_config('123456').get('123123'))
