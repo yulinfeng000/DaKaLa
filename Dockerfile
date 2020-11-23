@@ -14,7 +14,7 @@ RUN mkdir -p /usr/local/dakala/data/db
 
 WORKDIR /usr/local/dakala
 
-COPY ./static/js/* ./static/js/
+COPY ./static/js/rolldate.min.js ./static/js/rolldate.min.js
 
 COPY ./logsetting.py ./logsetting.py
 
@@ -28,7 +28,7 @@ COPY ./get-pip.py ./get-pip.py
 
 COPY ./templates/* ./templates/
 
-VOLUME /usr/local/dakala/static/
+VOLUME /usr/local/dakala/static/vc_images
 
 VOLUME /usr/local/dakala/db
 

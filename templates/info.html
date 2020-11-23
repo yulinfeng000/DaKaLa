@@ -247,7 +247,35 @@
           /><br /><br />
         </div>
 
-        <div class="ui-field-contain">
+
+
+      <div class="form-inline" >
+        <div class="form-group" for="scheduler-time-setting">
+             从
+
+            <div  onfocus="tp.show()" onblur="tp.hide()">
+                {% if config.scheduler_start_time %}
+                    <input id="scheduler-time-picker" readonly=""  type="text" placeholder="选择时间" name="scheduler_start_time" value="{{ config.scheduler_start_time  }}" />
+                {% else %}
+                    <input id="scheduler-time-picker" readonly=""  type="text" placeholder="选择时间" name="scheduler_start_time" />
+                {% endif %}
+            </div>
+            开始,每
+            <br/>
+            {% if config.scheduler_time_segment %}
+                <input type="number" name="scheduler_time_segment" value="{{ config.scheduler_time_segment }}" />
+            {% else %}
+                <input type="number" name="scheduler_time_segment" />
+            {% endif %}
+
+            天,
+            申请出一次校
+
+        </div>
+      </div>
+       <span>间隔天数小于等于0都视为一次性预约申请</span>
+
+      <div class="ui-field-contain">
           <p>申请出校原因</p>
           <label class="bmd-label-static" for="form_application_reason"
             >申请出校原因</label
@@ -275,36 +303,6 @@
           /><br /><br />
         </div>
 
-        <div class="ui-field-contain">
-             从
-
-            <div  onfocus="tp.show()" onblur="tp.hide()">
-                {% if config.scheduler_start_time %}
-                    <input id="scheduler-time-picker" readonly=""  type="text" placeholder="选择时间" name="scheduler_start_time" value="{{ config.scheduler_start_time  }}" />
-                {% else %}
-                    <input id="scheduler-time-picker" readonly=""  type="text" placeholder="选择时间" name="scheduler_start_time" />
-                {% endif %}
-            </div>
-            开始
-            <br/>
-            每
-
-
-            <br/>
-            {% if config.scheduler_time_segment %}
-                <input type="number" name="scheduler_time_segment" value="{{ config.scheduler_time_segment }}" />
-            {% else %}
-                <input type="number" name="scheduler_time_segment" />
-            {% endif %}
-            <br/>
-            天
-            申请出一次校
-            <br />
-            <label class="bmd-label-static" for="form_application_location"
-            >间隔天数小于等于0都视为一次性预约申请</label
-          >
-        </div>
-        <br/>
 
 
         <div class="ui-field-contain">
@@ -494,5 +492,9 @@
         console.log('插件运行结束');
     }
 })
+
+    function time_picker_clear(){
+         tp.value = ''
+    }
   </script>
 </html>
