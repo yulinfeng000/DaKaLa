@@ -100,3 +100,9 @@ def db_put_user_ip(stuid, ip):
 
 def db_get_user_last_ip(stuid):
     return get_value(f'{USER_IP}{stuid}')
+
+
+def clean_all_user_last_scheduler_exec_time():
+    itor = db.iterator(prefix=KEY(f'{LAST_SCHEDULER_EXEC_TIME}'))
+    for key in itor:
+        delete(key)
