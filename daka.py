@@ -17,6 +17,7 @@ def is_scheduler_exec(config: dict, stuid):
 
     start_time = datetime.strptime(config.get("scheduler_start_time"), '%Y-%m-%d')
     if datetime.now().date() == start_time.date():  # 预定打卡时间是今天
+        daka_logger.info(f'{stuid}，开始执行定时打卡任务')
         return True
 
     if not config.get("scheduler_time_segment"):  # 如果不是今天，但也没有设置打卡间隔
@@ -27,11 +28,14 @@ def is_scheduler_exec(config: dict, stuid):
     scheduler_time_segment = int(config.get("scheduler_time_segment"))
 
     last_exec_time_str = userdb.db_get_last_scheduler_exec_time(stuid)
+    daka_logger.debug(
+        f'{stuid},设定的开始时间为{start_time.date()},上次执行时间是{last_exec_time_str},设定的间隔为{scheduler_time_segment}天,今天是{datetime.now().date()}')
 
     if not last_exec_time_str:  # 如果没有上一次执行的结果
         time_interval = datetime.now().date() - start_time.date()  # 得到今天距离预定时间的时间间隔
         if time_interval.days >= scheduler_time_segment:  # 如果间隔大于等于预定的间隔
             userdb.db_put_last_scheduler_exec_time(stuid, str(datetime.now().date()))
+            daka_logger.info(f'{stuid}，开始执行定时打卡任务')
             return True
         else:
             return False
@@ -39,6 +43,7 @@ def is_scheduler_exec(config: dict, stuid):
     time_interval = datetime.now().date() - last_exec_time.date()
     if time_interval.days >= scheduler_time_segment:
         userdb.db_put_last_scheduler_exec_time(stuid, str(datetime.now().date()))
+        daka_logger.info(f'{stuid}，开始执行定时打卡任务')
         return True
     else:
         return False
@@ -153,6 +158,7 @@ def dakaing(link, driver, student, config):
     finally:
         driver.close()
         driver.quit()
+        daka_logger.debug("打卡结束，浏览器退出")
 
 
 def dakala(student, config: dict):
@@ -173,7 +179,6 @@ def dakala(student, config: dict):
     options.add_experimental_option('mobileEmulation', mobileEmulation)
     # start chrome and maximize window
     driver = webdriver.Chrome(chrome_options=options)
-
     driver.maximize_window()
 
     # go to login page
@@ -209,3 +214,5 @@ def dakala(student, config: dict):
     for a in linkList[:3]:
         if a.text.startswith(f'{datetime.now().date().month}{datetime.now().date().day}'):
             dakaing(a, driver, student, config)
+            daka_logger.info(f"{STU_ID},打卡任务执行完毕")
+            break
