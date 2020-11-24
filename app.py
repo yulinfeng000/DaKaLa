@@ -352,7 +352,8 @@ def admin_command_daka():
         return "SUPER COMMAND EXEC SUCCESS !"
     return "Permission Error!"
 
-@app.route('/admin/daka/clean/exectime', methods=['GET'])
+
+# @app.route('/admin/daka/clean/exectime', methods=['GET'])
 def admin_command_clean_last_exec_time():
     app_logger.info(
         f'超级管理员手动清除上次打卡时间执行，时间为{datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
@@ -366,12 +367,14 @@ def admin_command_clean_last_exec_time():
         return "SUPER COMMAND EXEC SUCCESS !"
     return "Permission Error!"
 
+
 if __name__ == '__main__':
     from multiprocessing import cpu_count
     import tornado.ioloop
-    scheduler.start()
-    http_server.bind(5000,"0.0.0.0")
 
-    http_server.start(cpu_count(),max_restarts=5)
+    scheduler.start()
+    http_server.bind(5000, "0.0.0.0")
+
+    http_server.start(cpu_count(), max_restarts=5)
     tornado.ioloop.IOLoop.current().start()
     # app.run("0.0.0.0", 5000,debug=False)
