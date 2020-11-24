@@ -79,11 +79,11 @@ def db_get_dk_callback_info(stuid):
 
 
 def db_put_last_scheduler_exec_time(stuid, time: str):
-    put_value(f'{DAKA_CALLBACK_INFO}{stuid}', time)
+    put_value(f'{LAST_SCHEDULER_EXEC_TIME}{stuid}', time)
 
 
 def db_get_last_scheduler_exec_time(stuid):
-    return get_value(f'{DAKA_CALLBACK_INFO}{stuid}')
+    return get_value(f'{LAST_SCHEDULER_EXEC_TIME}{stuid}')
 
 
 def find_all_user():
