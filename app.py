@@ -2,6 +2,7 @@ import os
 import random
 import string
 import time
+from concurrent.futures.process import ProcessPoolExecutor
 
 from flask import Flask, request, render_template, Response, redirect
 import userdb
@@ -9,7 +10,6 @@ from daka import dakala
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from flask_apscheduler import APScheduler
-from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 import datetime
 from logsetting import logger
@@ -20,7 +20,8 @@ app_logger = logger
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
-t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
+
+thread_executor = ProcessPoolExecutor(max_workers=2)
 
 
 @app.after_request
@@ -283,15 +284,16 @@ def daka_worker(stuid):
 
 @app.route('/daka/nophoto/<stuid>', methods=['POST'])
 def dakanophoto(stuid):
-    t_pool.submit(daka_worker, stuid)
-    # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
-    # t1.start()
+    import threading
+    # t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
+    # t_pool.submit(daka_worker, stuid)
+    thread_executor.submit(daka_worker, stuid)
     app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return render_template("dakasucess.html")
 
 
-@app.route('/api/daka/nophoto/<stuid>', methods=['POST'])
+@app.route('/api/daka/nophoto/<stuid>', methods=['POST','PUT'])
 def api_dakanophoto(stuid):
     """
     api 接口
@@ -300,17 +302,19 @@ def api_dakanophoto(stuid):
     """
     # t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
     # t1.start()
-    t_pool.submit(daka_worker, stuid)
     app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
+    with ProcessPoolExecutor(max_workers=1) as executor:
+        executor.submit(daka_worker, stuid)
     return "打卡成功", 200
 
 
-@app.route('/daka/<stuid>', methods=['POST'])
+@app.route('/daka/<stuid>', methods=['POST', 'PUT'])
 def daka(stuid):
     app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
-    task = t_pool.submit(daka_worker, stuid)
+
+    task = thread_executor.submit(daka_worker, stuid)
     while not task.done():
         time.sleep(1)
     """
@@ -329,7 +333,7 @@ def cycle_daka():
         f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     mylist = userdb.find_all_user()
     for stu in mylist:
-        t_pool.submit(daka_worker, stu['stuid'])
+        thread_executor.submit(daka_worker, stu['stuid'])
         # t_pool.submit(daka_worker, stu['stuid'])
         # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
         # _t.start()
@@ -348,7 +352,7 @@ def admin_command_daka():
     if supercode == __APP_SUPER_CODE:
         mylist = userdb.find_all_user()
         for stu in mylist:
-            t_pool.submit(daka_worker, stu['stuid'])
+            thread_executor.submit(daka_worker, stu['stuid'])
         return "SUPER COMMAND EXEC SUCCESS !"
     return "Permission Error!"
 

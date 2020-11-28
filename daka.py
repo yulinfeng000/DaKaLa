@@ -54,11 +54,7 @@ def dakaing(link, driver, student, config):
     link.click()
     from selenium.common.exceptions import \
         NoSuchElementException, NoAlertPresentException, UnexpectedAlertPresentException, InvalidSelectorException, \
-        InvalidElementStateException
-
-    # new feature
-    # auto application in-out school
-    # if atext.startswith(f'{datetime.now().date().month}{datetime.now().date().day}'):
+        InvalidElementStateException, TimeoutException
 
     STU_ID = student['stuid']
 
@@ -158,7 +154,7 @@ def dakaing(link, driver, student, config):
     finally:
         driver.close()
         driver.quit()
-        daka_logger.debug("打卡结束，浏览器退出")
+        daka_logger.debug(f"{STU_ID}打卡结束，浏览器退出")
 
 
 def dakala(student, config: dict):
@@ -211,8 +207,14 @@ def dakala(student, config: dict):
     # time.sleep(12)
     linkList = driver.find_elements_by_tag_name("a")
 
-    for a in linkList[:3]:
+    target_a = None
+    for a in linkList[:5]:
         if a.text.startswith(f'{datetime.now().date().month}{datetime.now().date().day}'):
-            dakaing(a, driver, student, config)
-            daka_logger.info(f"{STU_ID},打卡任务执行完毕")
+            target_a = a
             break
+
+    if target_a:
+        dakaing(target_a, driver, student, config)
+        daka_logger.info(f"{STU_ID},打卡任务执行完毕")
+    else:
+        daka_logger.warning(f"没有找到今天的打卡链接!!!,今天是{datetime.now().date().month}{datetime.now().date().day}")
