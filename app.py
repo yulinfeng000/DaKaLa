@@ -317,13 +317,6 @@ def daka(stuid):
     task = thread_executor.submit(daka_worker, stuid)
     while not task.done():
         time.sleep(1)
-    """
-    放弃独立线程，交给线程池执行
-    t1 = threading.Thread(target=daka_worker, args=(stuid,), daemon=True)
-    t1.start()
-    while t1.is_alive():
-        time.sleep(1)
-    """
     return photo(stuid), 200
 
 
@@ -348,13 +341,6 @@ def cycle_daka():
     #  return "daka成公",200
 
 
-@app.route('/admin/test', methods=['GET'])
-def admin_daka_test():
-    mylist = userdb.find_all_user()
-    for stu in mylist:
-        thread_executor.submit(daka_worker, stu['stuid'])
-    return "test success"
-
 @app.route('/admin/daka/all', methods=['GET'])
 def admin_command_daka():
     app_logger.info(
@@ -367,7 +353,8 @@ def admin_command_daka():
     if supercode == __APP_SUPER_CODE:
         mylist = userdb.find_all_user()
         for stu in mylist:
-            thread_executor.submit(daka_worker, stu['stuid'])
+            job = thread_executor.submit(daka_worker, stu['stuid'])
+            job.add_done_callback(job_callback(job))
         return "SUPER COMMAND EXEC SUCCESS !"
     return "Permission Error!"
 
