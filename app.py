@@ -293,7 +293,7 @@ def dakanophoto(stuid):
     return render_template("dakasucess.html")
 
 
-@app.route('/api/daka/nophoto/<stuid>', methods=['POST','PUT'])
+@app.route('/api/daka/nophoto/<stuid>', methods=['POST', 'PUT'])
 def api_dakanophoto(stuid):
     """
     api 接口
@@ -327,17 +327,27 @@ def daka(stuid):
     return photo(stuid), 200
 
 
+def job_callback(job):
+    stuid = job.result()
+    app_logger.debug(f"{stuid}打卡线程结束，浏览器退出")
+
+
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
 def cycle_daka():
+    from concurrent.futures import ThreadPoolExecutor
     app_logger.info(
         f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     mylist = userdb.find_all_user()
+
     for stu in mylist:
-        thread_executor.submit(daka_worker, stu['stuid'])
+        job = thread_executor.submit(daka_worker, stu['stuid'])
+        job.add_done_callback(job_callback(job))
         # t_pool.submit(daka_worker, stu['stuid'])
         # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
         # _t.start()
     #  return "daka成公",200
+
+
 
 
 @app.route('/admin/daka/all', methods=['GET'])

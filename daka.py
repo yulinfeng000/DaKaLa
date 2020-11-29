@@ -150,8 +150,6 @@ def dakaing(link, driver, student, config):
         )
 
         if not form_body:
-            import time
-            time.sleep(2)
             driver.refresh()
             form_body = WebDriverWait(driver, 5).until(
                 EC.visibility_of_element_located((By.ID, "wjTA"))
@@ -237,3 +235,5 @@ def dakala(student, config: dict):
     else:
         daka_logger.warning(f"没有找到今天的打卡链接!!!,今天是{datetime.now().date().month}{datetime.now().date().day}")
         userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+
+    return STU_ID
