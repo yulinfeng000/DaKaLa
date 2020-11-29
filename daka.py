@@ -51,7 +51,8 @@ def is_scheduler_exec(config: dict, stuid):
 
 @daka_logger.catch
 def dakaing(link, driver, student, config):
-    link.click()
+    link.click()  # 进入打卡界面
+
     from selenium.common.exceptions import \
         NoSuchElementException, NoAlertPresentException, UnexpectedAlertPresentException, InvalidSelectorException, \
         InvalidElementStateException, TimeoutException
@@ -118,11 +119,22 @@ def dakaing(link, driver, student, config):
         except NoAlertPresentException:
             daka_logger.warning(
                 f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-            form_body = WebDriverWait(driver, 2).until(
-                EC.presence_of_element_located((By.TAG_NAME, "form"))
+
+            form_body = WebDriverWait(driver, 5).until(
+                EC.visibility_of_element_located((By.ID, "wjTA"))
             )
 
-            # form_body = driver.find_element_by_tag_name("form")
+            if not form_body:
+                import time
+                time.sleep(2)
+                driver.refresh()
+                form_body = WebDriverWait(driver, 5).until(
+                    EC.visibility_of_element_located((By.ID, "wjTA"))
+                )
+                if not form_body:
+                    raise TimeoutException
+
+                    # form_body = driver.find_element_by_tag_name("form")
             vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
             form_body.screenshot(vc_image_path)
             daka_logger.info(
@@ -134,8 +146,18 @@ def dakaing(link, driver, student, config):
         # time.sleep(1)
 
         form_body = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located((By.TAG_NAME, "form"))
+            EC.visibility_of_element_located((By.TAG_NAME, "form"))
         )
+
+        if not form_body:
+            import time
+            time.sleep(2)
+            driver.refresh()
+            form_body = WebDriverWait(driver, 5).until(
+                EC.visibility_of_element_located((By.ID, "wjTA"))
+            )
+            if not form_body:
+                raise TimeoutException
 
         # form_body = driver.find_element_by_tag_name("form")
         vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
@@ -152,7 +174,7 @@ def dakaing(link, driver, student, config):
         daka_logger.warning(f'学号 {STU_ID} , 打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
         userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
     finally:
-        driver.close()
+        # driver.close()
         driver.quit()
         daka_logger.debug(f"{STU_ID}打卡结束，浏览器退出")
 
@@ -200,11 +222,7 @@ def dakala(student, config: dict):
 
     driver.get(
         "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
-    # time.sleep(1)
-    # n = driver.window_handles  # 这个时候会生成一个新窗口或新标签页的句柄，代表这个窗口的模拟driver
-    # print('当前句柄: ', n)  # 会打印所有的句柄
-    # driver.switch_to.window(n[-1])
-    # time.sleep(12)
+
     linkList = driver.find_elements_by_tag_name("a")
 
     target_a = None
@@ -218,3 +236,4 @@ def dakala(student, config: dict):
         daka_logger.info(f"{STU_ID},打卡任务执行完毕")
     else:
         daka_logger.warning(f"没有找到今天的打卡链接!!!,今天是{datetime.now().date().month}{datetime.now().date().day}")
+        userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
