@@ -21,7 +21,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 
-thread_executor = ProcessPoolExecutor(max_workers=2)
+thread_executor = ProcessPoolExecutor(max_workers=1)
 
 
 @app.after_request
@@ -348,7 +348,12 @@ def cycle_daka():
     #  return "daka成公",200
 
 
-
+@app.route('/admin/test', methods=['GET'])
+def admin_daka_test():
+    mylist = userdb.find_all_user()
+    for stu in mylist:
+        thread_executor.submit(daka_worker, stu['stuid'])
+    return "test success"
 
 @app.route('/admin/daka/all', methods=['GET'])
 def admin_command_daka():
