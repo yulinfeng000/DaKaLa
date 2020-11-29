@@ -21,7 +21,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 
-thread_executor = ProcessPoolExecutor(max_workers=1)
+thread_executor = ProcessPoolExecutor(max_workers=3)
 
 
 @app.after_request
@@ -320,11 +320,6 @@ def daka(stuid):
     return photo(stuid), 200
 
 
-def job_callback(job):
-    stuid = job.result()
-    app_logger.debug(f"{stuid}打卡线程结束，浏览器退出")
-
-
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
 def cycle_daka():
     from concurrent.futures import ThreadPoolExecutor
@@ -333,12 +328,9 @@ def cycle_daka():
     mylist = userdb.find_all_user()
 
     for stu in mylist:
-        job = thread_executor.submit(daka_worker, stu['stuid'])
-        job.add_done_callback(job_callback(job))
-        # t_pool.submit(daka_worker, stu['stuid'])
-        # _t = threading.Thread(target=daka_worker, args=(stu['stuid'],), daemon=True)
-        # _t.start()
-    #  return "daka成公",200
+        thread_executor.submit(daka_worker, stu['stuid'])
+
+    return "success"
 
 
 @app.route('/admin/daka/all', methods=['GET'])
@@ -353,8 +345,7 @@ def admin_command_daka():
     if supercode == __APP_SUPER_CODE:
         mylist = userdb.find_all_user()
         for stu in mylist:
-            job = thread_executor.submit(daka_worker, stu['stuid'])
-            job.add_done_callback(job_callback(job))
+            thread_executor.submit(daka_worker, stu['stuid'])
         return "SUPER COMMAND EXEC SUCCESS !"
     return "Permission Error!"
 

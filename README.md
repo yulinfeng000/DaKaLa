@@ -41,6 +41,8 @@
         init: true
         container_name: dakala
         restart: always
+        volumes:
+          - /dev/shm:/dev/shm
         ports:
           - 8888:5000   # 容器对外暴露端口的映射
         environment:
