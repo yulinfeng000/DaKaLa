@@ -49,7 +49,6 @@ def is_scheduler_exec(config: dict, stuid):
         return False
 
 
-@daka_logger.catch
 def dakaing(link, driver, student, config):
     link.click()  # 进入打卡界面
 

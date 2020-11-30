@@ -21,7 +21,8 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 
-process_executor = ProcessPoolExecutor(4)
+thread_executor = ProcessPoolExecutor(4)
+
 
 @app.after_request
 def add_header(r):
@@ -286,7 +287,7 @@ def dakanophoto(stuid):
     import threading
     # t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
     # t_pool.submit(daka_worker, stuid)
-    process_executor.submit(daka_worker, stuid)
+    thread_executor.submit(daka_worker, stuid)
     app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     return render_template("dakasucess.html")
@@ -313,7 +314,7 @@ def daka(stuid):
     app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
 
-    task = process_executor.submit(daka_worker, stuid)
+    task = thread_executor.submit(daka_worker, stuid)
     while not task.done():
         time.sleep(1)
     return photo(stuid), 200
@@ -321,13 +322,13 @@ def daka(stuid):
 
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
 def cycle_daka():
-    from concurrent.futures import ProcessPoolExecutor
+    from concurrent.futures import ThreadPoolExecutor
     app_logger.info(
         f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     mylist = userdb.find_all_user()
-    with ProcessPoolExecutor(4) as thread_executor:
-        for stu in mylist:
-            thread_executor.submit(daka_worker, stu['stuid'])
+    for stu in mylist:
+        thread_executor.submit(daka_worker, stu['stuid'])
+
     return "success"
 
 
@@ -342,9 +343,8 @@ def admin_command_daka():
     # print(__APP_SUPER_CODE)
     if supercode == __APP_SUPER_CODE:
         mylist = userdb.find_all_user()
-        with ProcessPoolExecutor(4) as thread_executor:
-            for stu in mylist:
-                thread_executor.submit(daka_worker, stu['stuid'])
+        for stu in mylist:
+            thread_executor.submit(daka_worker, stu['stuid'])
         return "SUPER COMMAND EXEC SUCCESS !"
     return "Permission Error!"
 
