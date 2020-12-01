@@ -224,7 +224,7 @@ def dakala(student, config: dict):
 
     target_a = None
     for a in linkList[:5]:
-        if a.text.startswith(f'{datetime.now().date().month}{datetime.now().date().day}'):
+        if a.text.startswith(f'{datetime.now().strftime("%m%d")}'):
             target_a = a
             break
 
@@ -234,5 +234,6 @@ def dakala(student, config: dict):
     else:
         daka_logger.warning(f"{STU_ID}没有找到今天的打卡链接!!!,今天是{datetime.now().date().month}{datetime.now().date().day}")
         userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+        driver.quit()
 
     return STU_ID
