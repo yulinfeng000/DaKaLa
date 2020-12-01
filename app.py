@@ -21,7 +21,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 
-thread_executor = ProcessPoolExecutor(4)
+thread_executor = ProcessPoolExecutor(3)
 
 
 @app.after_request
