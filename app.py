@@ -2,7 +2,7 @@ import os
 import random
 import string
 import time
-from concurrent.futures.process import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 from flask import Flask, request, render_template, Response, redirect
 import userdb
@@ -21,7 +21,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 scheduler = APScheduler(app=app)
 http_server = HTTPServer(WSGIContainer(app), xheaders=True)
 
-thread_executor = ProcessPoolExecutor(4)
+thread_executor = ThreadPoolExecutor(4)
 
 
 @app.after_request
@@ -304,8 +304,7 @@ def api_dakanophoto(stuid):
     # t1.start()
     app_logger.info(
         f"学号 {stuid},执行了手动打卡,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
-    with ProcessPoolExecutor(max_workers=1) as executor:
-        executor.submit(daka_worker, stuid)
+    thread_executor.submit(daka_worker, stuid)
     return "打卡成功", 200
 
 
