@@ -227,7 +227,7 @@ def dakala(student, config: dict):
             daka_logger.info(f"{STU_ID},打卡任务执行完毕")
         else:
             daka_logger.warning(f"{STU_ID}没有找到今天的打卡链接!!!,今天是{datetime.now().strftime('%m%d')},\n{str([link.text for link in linkList[:5]])}")
-            userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+            userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("/%Y%m/%d")}，请检查教务处密码是否错误')
     finally:
         driver.quit()
         daka_logger.debug(f"{STU_ID}打卡结束，浏览器退出")
