@@ -348,6 +348,14 @@ def admin_command_daka():
     return "Permission Error!"
 
 
+# @app.route("/admin/daka/test", methods=["GET"])
+def test():
+    mylist = userdb.find_all_user()
+    for stu in mylist:
+        thread_executor.submit(daka_worker, stu['stuid'])
+    return "SUPER COMMAND EXEC SUCCESS !"
+
+
 # @app.route('/admin/daka/clean/exectime', methods=['GET'])
 def admin_command_clean_last_exec_time():
     app_logger.info(

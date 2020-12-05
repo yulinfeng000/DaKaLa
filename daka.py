@@ -55,11 +55,8 @@ def dakaing(link, driver, student, config):
     from selenium.common.exceptions import \
         NoSuchElementException, NoAlertPresentException, UnexpectedAlertPresentException, InvalidSelectorException, \
         InvalidElementStateException, TimeoutException
-
     STU_ID = student['stuid']
-
     try:
-
         if is_scheduler_exec(config, STU_ID):
             if config.get('application_start_day') is not None:
                 application_start_day_elem = driver.find_element_by_name(
@@ -170,10 +167,6 @@ def dakaing(link, driver, student, config):
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
         daka_logger.warning(f'学号 {STU_ID} , 打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
         userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
-    finally:
-        driver.close()
-        driver.quit()
-        daka_logger.debug(f"{STU_ID}打卡结束，浏览器退出")
 
 
 def dakala(student, config: dict):
@@ -194,47 +187,48 @@ def dakala(student, config: dict):
     options.add_experimental_option('mobileEmulation', mobileEmulation)
     # start chrome and maximize window
     driver = webdriver.Chrome(chrome_options=options)
-    driver.maximize_window()
+    try:
+        driver.maximize_window()
 
-    # go to login page
-    driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
-    # time.sleep(1)
+        # go to login page
+        driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
+        # time.sleep(1)
 
-    # find input element
+        # find input element
 
-    username_input = WebDriverWait(driver, 2).until(
-        EC.presence_of_element_located((By.ID, "txtId"))
-    )
-    username_input.send_keys(STU_ID)
+        username_input = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.ID, "txtId"))
+        )
+        username_input.send_keys(STU_ID)
 
-    password_input = WebDriverWait(driver, 2).until(
-        EC.presence_of_element_located((By.ID, "txtMM"))
-    )
+        password_input = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.ID, "txtMM"))
+        )
 
-    password_input.send_keys(STU_PASSWD)
-    login_submit_btn = WebDriverWait(driver, 2).until(
-        EC.presence_of_element_located((By.ID, "IbtnEnter"))
-    )
-    login_submit_btn.click()
+        password_input.send_keys(STU_PASSWD)
+        login_submit_btn = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.ID, "IbtnEnter"))
+        )
+        login_submit_btn.click()
 
-    driver.get(
-        "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
+        driver.get(
+            "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
 
-    linkList = driver.find_elements_by_tag_name("a")
+        linkList = driver.find_elements_by_tag_name("a")
 
-    target_a = None
-    for a in linkList[:5]:
-        if a.text.startswith(f'{datetime.now().strftime("%m%d")}'):
-            target_a = a
-            break
+        target_a = None
+        for a in linkList[:5]:
+            if a.text.startswith(f'{datetime.now().strftime("%m%d")}'):
+                target_a = a
+                break
 
-    if target_a:
-        dakaing(target_a, driver, student, config)
-        daka_logger.info(f"{STU_ID},打卡任务执行完毕")
-    else:
-        daka_logger.warning(f"{STU_ID}没有找到今天的打卡链接!!!,今天是{datetime.now().date().month}{datetime.now().date().day}")
-        userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
-        driver.close()
+        if target_a:
+            dakaing(target_a, driver, student, config)
+            daka_logger.info(f"{STU_ID},打卡任务执行完毕")
+        else:
+            daka_logger.warning(f"{STU_ID}没有找到今天的打卡链接!!!,今天是{datetime.now().strftime('%m%d')},\n{str([link.text for link in linkList[:5]])}")
+            userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+    finally:
         driver.quit()
-
+        daka_logger.debug(f"{STU_ID}打卡结束，浏览器退出")
     return STU_ID
