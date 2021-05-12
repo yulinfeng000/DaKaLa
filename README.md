@@ -1,6 +1,6 @@
 # 打卡啦 DaKaLa
 
-**UPDATE NEW ！！** [新的打卡地址](http://106.12.42.246:8888)
+[打卡地址](http://103.14.34.113:8899/)
 
 **觉得好用给个 star 呗，各位老板这个对我真的很重要**
 
@@ -57,29 +57,5 @@
 
 
 
-
-# 网页端（主推）
-
-- **新**网页端地址 [打卡网页端](http://106.12.42.246:8888)
-- 建议手机书签保存
-
-## ~~移动端（deprecated 退坑不再维护)~~
-
-<b> ~~编译好的 app 在 `mobile-app` 文件夹中，请自取~~ </b>
-
-基于 React Native 开发的移动端，代码很烂，但基本功能已实现。可自行构建移动端应用
-
-- ios 端由于我没有开发者账号，所以需要借助 <b> altsotre </b> 或者 <b> impactor </b> 安装，具体使用请百度
-
-- [移动端项目地址](https://github.com/yulinfeng000/DaKaLa-mobile)
-- ~~[app 下载地址](https://github.com/yulinfeng000/DaKaLa/releases)~~(~~虽退坑但仍可用~~)
-
-#### 声明 移动端没有实机测试，目前稳定性，适配度未知
-
-<img src="img/andorid/info.png" style="zoom:25%;" />
-
-<img src="img/andorid/dakaphoto.png" style="zoom:25%;" />
-
-<img src="img/ios/info.png" style="zoom:25%;" />
-
-<img src="img/ios/dakaphoto.png" style="zoom:25%;" />
+# 网页端
+[打卡地址](http://103.14.34.113:8899/)
