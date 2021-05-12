@@ -3,7 +3,6 @@ import random
 import string
 import time
 from concurrent.futures import ThreadPoolExecutor
-
 from flask import Flask, request, render_template, Response, redirect
 import userdb
 from daka import dakala
@@ -14,7 +13,11 @@ from datetime import timedelta
 import datetime
 from logsetting import logger
 
-app = Flask(__name__, static_folder=os.path.abspath('./static/'))
+app = Flask(__name__,
+            static_folder=os.path.abspath('./static/'),
+            template_folder=os.path.abspath('./templates/')
+            )
+
 app_logger = logger
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
@@ -284,7 +287,6 @@ def daka_worker(stuid):
 
 @app.route('/daka/nophoto/<stuid>', methods=['POST'])
 def dakanophoto(stuid):
-    import threading
     # t_pool = ThreadPoolExecutor(2)  # 别设置太大，打卡很要求性能，同时执行太多会顶不住
     # t_pool.submit(daka_worker, stuid)
     thread_executor.submit(daka_worker, stuid)
@@ -321,7 +323,6 @@ def daka(stuid):
 
 @scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
 def cycle_daka():
-    from concurrent.futures import ThreadPoolExecutor
     app_logger.info(
         f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
     mylist = userdb.find_all_user()

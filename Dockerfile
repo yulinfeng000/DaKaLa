@@ -16,13 +16,13 @@ WORKDIR /usr/local/dakala
 
 COPY ./static/js/rolldate.min.js ./static/js/rolldate.min.js
 
-COPY ./logsetting.py ./logsetting.py
+COPY app/logsetting.py ./logsetting.py
 
-COPY ./daka.py ./daka.py
+COPY app/daka.py ./daka.py
 
-COPY ./app.py ./app.py
+COPY app/app.py ./app.py
 
-COPY ./userdb.py ./userdb.py
+COPY app/userdb.py ./userdb.py
 
 COPY ./get-pip.py ./get-pip.py
 

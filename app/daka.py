@@ -12,6 +12,7 @@ daka_logger = logger
 
 
 def is_scheduler_exec(config: dict, stuid):
+
     if not config.get("scheduler_start_time"):
         return False
 
