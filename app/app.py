@@ -4,14 +4,14 @@ import string
 import time
 from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, request, render_template, Response, redirect
-import userdb
-from daka import dakala
+import .userdb
+from .daka import dakala
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from flask_apscheduler import APScheduler
 from datetime import timedelta
 import datetime
-from logsetting import logger
+from .logsetting import logger
 
 app = Flask(__name__,
             static_folder=os.path.abspath('./static/'),
@@ -321,7 +321,7 @@ def daka(stuid):
     return photo(stuid), 200
 
 
-@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10)
+@scheduler.task(id="cycle_daka", trigger='cron', timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10,misfire_grace_time=36000)
 def cycle_daka():
     app_logger.info(
         f"今日批量打卡开始执行,时间为{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
