@@ -1,0 +1,20 @@
+services:
+    dakala:
+        container_name: dakala
+        image: yulinfeng/dakala2:1.9
+        init: true
+        environment: 
+            APP_SECRET_KEY:  # your app jwt key
+            APP_ADMIN_KEY:  # your admin  key
+            TZ: "Asia/Shanghai" # do not edit !
+        volumes:
+            - ./data:/dakala/data
+        ports:
+            - 8000:8000
+    frontend:
+        image: yulinfeng/dakala2-frontend:uni-1.0
+        container_name: dk2f
+        ports:
+          - 5000:5000
+        depends_on:
+          - dakala
