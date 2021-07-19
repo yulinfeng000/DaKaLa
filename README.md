@@ -21,7 +21,7 @@
          |_  db
          |_  log
          |_  pic
-    ```
+   ```
     docker-compose.yml 文件
     请不要拆分该文件分别启动镜像
     ```yaml
@@ -41,6 +41,8 @@
       frontend:
           image: yulinfeng/dakala2-frontend:uni-1.0
           container_name: dk2f
+          environment: 
+          	REACT_APP_BASE_URL: https://api.xxx.com # 你的服务器地址
           ports:
             - 5000:5000
           depends_on:

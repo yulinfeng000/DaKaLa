@@ -6,7 +6,7 @@ from flask_jwt_extended.utils import create_access_token
 from werkzeug.security import safe_str_cmp
 
 from concurrent.futures import ThreadPoolExecutor
-from flask import Flask, json, request, send_file, jsonify
+from flask import Flask, request, send_file, jsonify
 from flask_jwt_extended import JWTManager, jwt_required, current_user
 from flask_apscheduler import APScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore

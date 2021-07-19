@@ -1,0 +1,8 @@
+services:
+  dakala:
+    image: yulinfeng/dakala2-frontend:1.0
+    container_name: dakala
+    environment: 
+      REACT_APP_BASE_URL: https://dkapi.merborn.fun
+    ports:
+      - 5000:5000
