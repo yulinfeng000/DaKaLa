@@ -1,0 +1,6 @@
+services:
+  dakala:
+    image: yulinfeng/dakala2-frontend:1.0
+    container_name: dakala
+    ports:
+      - 5000:5000

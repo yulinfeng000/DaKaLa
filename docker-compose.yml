@@ -1,14 +1,13 @@
-version: "2.2"
 services:
-  dakala:
-    image: yulinfeng/dakala:1.0
-    init: true
-    container_name: dakala
-    restart: always
-    ports:
-      - 8888:5000
-    volumes:
-      - /dev/shm:/dev:shm
-    #   - /usr/local/docker/dakala/data:/usr/local/dakala/data/
-    environment:
-      SUPER_CODE: 536c0b339345616c1b33caf454454d8b8a190d6cX # 管理员手动全局打卡密钥,随意填写
+    dakala2:
+        container_name: dk2
+        image: yulinfeng/dakala2:1.0
+        init: true
+        environment: 
+            APP_SECRET_KEY: 2d3fffefc3584a53f29cefcba175d2b92760d5fbd8929063d52a9615b74724fb
+            APP_ADMIN_KEY: TOMCAT@YLF
+            TZ: "Asia/Shanghai"
+        volumes: 
+            - ./data:/dakala/data
+        ports:
+            - 8888:8000

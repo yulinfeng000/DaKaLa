@@ -1,37 +1,31 @@
 FROM yulinfeng/dakala-base:1.0
 
-USER root
+LABEL maintainer="yulinfeng<yulinfeng.mail@foxmail.com>"
 
-RUN mkdir -p /usr/local/dakala/templates
+RUN echo "Asia/Shanghai" > /etc/timezone
 
-RUN mkdir -p /usr/local/dakala/static/vc_images
+COPY ./requirements.txt .
 
-RUN mkdir -p /usr/local/dakala/static/js
+RUN pip install -r requirements.txt
 
-RUN mkdir -p /usr/local/dakala/data/log
+ENV APP_SECRET_KEY='9438e1d80dc365bc4609df5e3269a4b01845d587f51cd6d7a222fc0d0e0b809d'
+ENV APP_ADMIN_KEY='Tomcat!'
+RUN mkdir -p /dakala/app
 
-RUN mkdir -p /usr/local/dakala/data/db
+RUN mkdir -p /dakala/data/log
 
-WORKDIR /usr/local/dakala
+RUN mkdir -p /dakala/data/pic
 
-COPY ./static/js/rolldate.min.js ./static/js/rolldate.min.js
+RUN mkdir -p /dakala/data/db
 
-COPY app/logsetting.py ./logsetting.py
+WORKDIR /dakala
 
-COPY app/daka.py ./daka.py
+VOLUME /dakala/data
 
-COPY app/app.py ./app.py
+COPY ./app/* ./app/
 
-COPY app/userdb.py ./userdb.py
+COPY ./gunicorn.conf.py ./gunicorn.conf.py
 
-COPY ./get-pip.py ./get-pip.py
+EXPOSE 8000
 
-COPY ./templates/* ./templates/
-
-VOLUME /usr/local/dakala/static/vc_images
-
-VOLUME /usr/local/dakala/db
-
-EXPOSE 5000
-
-CMD ["python3" , "app.py"]
+CMD [ "gunicorn","-b",":8000","-k","gevent","app.main:app","--log-config","app/log.conf","--preload"]

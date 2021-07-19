@@ -1,14 +1,22 @@
+import logging
+import os
 from datetime import datetime
-import userdb
+import app.userdb as userdb
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+
 from selenium.webdriver.support import expected_conditions as EC
-from logsetting import logger
+import logging
+
+daka_logger = logging.getLogger('gunicorn.error')
+
+PIC_LOCATION = os.path.abspath('./data/pic')
+daka_logger.info(f'图片存放地址：{PIC_LOCATION}')
 
 DAKA_URL = "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/editSj.asp?UTp=Xs&Tx=33_1&ObjId="
-daka_logger = logger
 
 
 def is_scheduler_exec(config: dict, stuid):
@@ -16,7 +24,8 @@ def is_scheduler_exec(config: dict, stuid):
     if not config.get("scheduler_start_time"):
         return False
 
-    start_time = datetime.strptime(config.get("scheduler_start_time"), '%Y-%m-%d')
+    start_time = datetime.strptime(
+        config.get("scheduler_start_time"), '%Y-%m-%d')
     if datetime.now().date() == start_time.date():  # 预定打卡时间是今天
         daka_logger.info(f'{stuid}，开始执行定时打卡任务')
         return True
@@ -24,7 +33,7 @@ def is_scheduler_exec(config: dict, stuid):
     if not config.get("scheduler_time_segment"):  # 如果不是今天，但也没有设置打卡间隔
         return False
 
-    if int(config.get("scheduler_time_segment")) <= 0:  # 如果打卡时间间隔小于等于0,说明是一次性的预定
+    if int(config.get("scheduler_time_segment", 0)) <= 0:  # 如果打卡时间间隔小于等于0,说明是一次性的预定
         return False
     scheduler_time_segment = int(config.get("scheduler_time_segment"))
 
@@ -35,7 +44,8 @@ def is_scheduler_exec(config: dict, stuid):
     if not last_exec_time_str:  # 如果没有上一次执行的结果
         time_interval = datetime.now().date() - start_time.date()  # 得到今天距离预定时间的时间间隔
         if time_interval.days >= scheduler_time_segment:  # 如果间隔大于等于预定的间隔
-            userdb.db_put_last_scheduler_exec_time(stuid, str(datetime.now().date()))
+            userdb.db_put_last_scheduler_exec_time(
+                stuid, str(datetime.now().date()))
             daka_logger.info(f'{stuid}，开始执行定时打卡任务')
             return True
         else:
@@ -43,7 +53,8 @@ def is_scheduler_exec(config: dict, stuid):
     last_exec_time = datetime.strptime(last_exec_time_str, '%Y-%m-%d')
     time_interval = datetime.now().date() - last_exec_time.date()
     if time_interval.days >= scheduler_time_segment:
-        userdb.db_put_last_scheduler_exec_time(stuid, str(datetime.now().date()))
+        userdb.db_put_last_scheduler_exec_time(
+            stuid, str(datetime.now().date()))
         daka_logger.info(f'{stuid}，开始执行定时打卡任务')
         return True
     else:
@@ -72,7 +83,8 @@ def dakaing(link, driver, student, config):
                     config['application_start_time'])
 
             if config.get('application_end_day') is not None:
-                application_end_day_elem = driver.find_element_by_name('sF21912_5')
+                application_end_day_elem = driver.find_element_by_name(
+                    'sF21912_5')
                 Select(application_end_day_elem).select_by_value(
                     config['application_end_day'])
 
@@ -86,10 +98,12 @@ def dakaing(link, driver, student, config):
                 application_location_elem = driver.find_element_by_name(
                     'sF21912_1')
                 application_location_elem.clear()
-                application_location_elem.send_keys(config['application_location'])
+                application_location_elem.send_keys(
+                    config['application_location'])
 
             if config.get('application_reason') is not None:
-                application_reason_elem = driver.find_element_by_name('sF21912_2')
+                application_reason_elem = driver.find_element_by_name(
+                    'sF21912_2')
                 application_reason_elem.clear()
                 application_reason_elem.send_keys(config['application_reason'])
 
@@ -132,11 +146,14 @@ def dakaing(link, driver, student, config):
                     raise TimeoutException
 
                     # form_body = driver.find_element_by_tag_name("form")
-            vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
+
+            vc_image_path = os.path.abspath(
+                f'{PIC_LOCATION}/{STU_ID}_img.png')
             form_body.screenshot(vc_image_path)
             daka_logger.info(
                 f"{STU_ID} 打卡： 确认窗口未弹出但打卡成功并已经截图,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
-            userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
+            userdb.db_put_dk_callback_info(
+                STU_ID, f"{datetime.now().strftime('%m/%d/%Y  %H:%M:%S')}打卡成功")
 
         # get screenshot
 
@@ -155,25 +172,29 @@ def dakaing(link, driver, student, config):
                 raise TimeoutException
 
         # form_body = driver.find_element_by_tag_name("form")
-        vc_image_path = f'./static/vc_images/{STU_ID}_img.png'
-        import os
-        form_body.screenshot(os.path.abspath(vc_image_path))
+        # daka_logger.info(f"{PIC_LOCATION}/{STU_ID}_img.png")
+        form_body.screenshot(f"{PIC_LOCATION}/{STU_ID}_img.png")
 
-        userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
+        userdb.db_put_dk_callback_info(
+            STU_ID, f"{datetime.now().strftime('%m/%d/%Y  %H:%M:%S')} 打卡成功")
+        # userdb.db_put_dk_callback_info(STU_ID, "打卡成功")
         daka_logger.info(
             f"{STU_ID}: 打卡成功,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
-
         # close browser window
 
     except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
-        daka_logger.warning(f'学号 {STU_ID} , 打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
-        userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+        daka_logger.warning(
+            f'学号 {STU_ID},打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+        userdb.db_put_dk_callback_info(
+            STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")},请尝试手动打卡或考虑打卡时间是否过晚')
 
 
 def dakala(student, config: dict):
+    today_time = f'{datetime.now().strftime("%m%d")}'
     # print(student, config)
     STU_ID = student['stuid']
     STU_PASSWD = student['password']
+    daka_logger.debug(f'{STU_ID}/{today_time}')
 
     if STU_ID == "" and STU_PASSWD == "":
         # print("没有设置教务处用户名和密码")
@@ -193,33 +214,31 @@ def dakala(student, config: dict):
 
         # go to login page
         driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
-        # time.sleep(1)
 
         # find input element
 
         username_input = WebDriverWait(driver, 2).until(
             EC.presence_of_element_located((By.ID, "txtId"))
         )
+
         username_input.send_keys(STU_ID)
 
         password_input = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located((By.ID, "txtMM"))
+            EC.element_to_be_clickable((By.ID, "txtMM"))
         )
 
         password_input.send_keys(STU_PASSWD)
-        login_submit_btn = WebDriverWait(driver, 2).until(
-            EC.presence_of_element_located((By.ID, "IbtnEnter"))
-        )
-        login_submit_btn.click()
+        password_input.send_keys(Keys.ENTER)
 
         driver.get(
             "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/sj.asp?UTp=Xs&jkdk=Y")
 
+        # linkList = WebDriverWait( driver, 3, EC.presence_of_all_elements_located(By.TAG_NAME, 'a'))
         linkList = driver.find_elements_by_tag_name("a")
 
         target_a = None
         for a in linkList[:5]:
-            if a.text.startswith(f'{datetime.now().strftime("%m%d")}'):
+            if a.text.startswith(today_time):
                 target_a = a
                 break
 
@@ -227,8 +246,13 @@ def dakala(student, config: dict):
             dakaing(target_a, driver, student, config)
             daka_logger.info(f"{STU_ID},打卡任务执行完毕")
         else:
-            daka_logger.warning(f"{STU_ID}没有找到今天的打卡链接!!!,今天是{datetime.now().strftime('%m%d')},\n{str([link.text for link in linkList[:5]])}")
-            userdb.db_put_dk_callback_info(STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("/%Y%m/%d")}，请检查教务处密码是否错误')
+            daka_logger.warning(
+                f"{STU_ID}没有找到今天的打卡链接!!!,今天是{datetime.now()},\n{str([link.text for link in linkList[:5]])}")
+            userdb.db_put_dk_callback_info(
+                STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%Y/%m/%d")}，请检查教务处密码是否错误')
+    except Exception:
+        daka_logger.warn(f'{STU_ID}打卡发生了错误')
+        userdb.db_put_dk_callback_info(STU_ID, "打卡系统发生错误,请及时联系作者")
     finally:
         driver.quit()
         daka_logger.debug(f"{STU_ID}打卡结束，浏览器退出")

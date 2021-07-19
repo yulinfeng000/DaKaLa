@@ -1,1 +1,1 @@
-docker build --tag yulinfeng/dakala-base:1.0 .
+docker build --tag yulinfeng/dakala2-base:1.0 .
