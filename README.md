@@ -14,15 +14,19 @@
 
 - 现成镜像
   
-  建立 data/db,data/log,data/pic 三个文件夹
+   找一个空文件夹中建立 data/db,data/log,data/pic 三个文件夹并创建文件docker-compose.yml
    结构如下图所示
    ```
-    data-
-         |_  db
-         |_  log
-         |_  pic
+    /-
+     | 
+     |-data/-
+     |       |_ db/
+     |       |_ log/
+     |       |_ pic/
+     |
+     |-docker-compose.yml
    ```
-    docker-compose.yml 文件
+    docker-compose.yml 文件内容
     请不要拆分该文件分别启动镜像
     ```yaml
     services:
@@ -48,7 +52,7 @@
           depends_on:
             - dakala
     ```
-
+执行`docker-compose up -d`启动容器
 ## 本地搭建运行环境开发
 
 1. 前提: 需要 selenium chrome-driver chrome

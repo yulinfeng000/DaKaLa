@@ -43,6 +43,9 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)  # jwt expire time
 
 # scheduler init
 JOBS_STORE_LOCATION = os.path.abspath("./data/db/job.db")
+if os.path.exists(JOBS_STORE_LOCATION):
+    app.logger.info('发现旧的定时任务文件，删除')
+    os.remove(JOBS_STORE_LOCATION)
 app.logger.info(f"定时任务文件位置: {JOBS_STORE_LOCATION}")
 
 

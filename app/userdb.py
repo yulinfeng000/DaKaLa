@@ -19,7 +19,7 @@ APSC = "APSC_"
 DAKA_TRIGGER = "DAKA_TRIGGER_"
 
 
-class DBAccess():
+class DBA():
 
     def __enter__(self) -> plyvel.DB:
         self.db = plyvel.DB(DB_LOCATION, create_if_missing=True)
@@ -31,9 +31,6 @@ class DBAccess():
         # logger.debug("db exited")
 
 
-dba = DBAccess()
-
-
 def KEY(key):
     return bytes(key, encoding='utf-8')
 
@@ -43,12 +40,12 @@ def VALUE(value):
 
 
 def delete(key):
-    with dba as db:
+    with DBA() as db:
         db.delete(KEY(key))
 
 
 def get_object(key) -> Optional[Dict]:
-    with dba as db:
+    with DBA() as db:
         res = db.get(KEY(key))
         if res is None:
             return None
@@ -56,17 +53,17 @@ def get_object(key) -> Optional[Dict]:
 
 
 def put_object(key, value):
-    with dba as db:
+    with DBA() as db:
         db.put(KEY(key), VALUE(json.dumps(value, sort_keys=True)))
 
 
 def put_value(key, value):
-    with dba as db:
+    with DBA() as db:
         db.put(KEY(key), VALUE(value))
 
 
 def get_value(key):
-    with dba as db:
+    with DBA() as db:
         res = db.get(KEY(key))
         if res is None:
             return res
@@ -114,7 +111,7 @@ def db_get_last_scheduler_exec_time(stuid):
 
 
 def find_all_user():
-    with dba as db:
+    with DBA() as db:
         itor = db.iterator(prefix=KEY(f'{STUDENT_TABLE}'))
         res = [json.loads(v) for _, v in itor]
         return res
@@ -129,7 +126,7 @@ def db_get_user_last_ip(stuid):
 
 
 def clean_all_user_last_scheduler_exec_time():
-    with dba as db:
+    with DBA() as db:
         itor = db.iterator(prefix=KEY(f'{LAST_SCHEDULER_EXEC_TIME}'))
         for key in itor:
             delete(key)
@@ -158,7 +155,7 @@ class LevelDBJobStore(BaseJobStore):
         put_object(f"{APSC}{job.id}", job)
 
     def get_all_jobs(self):
-        with dba as db:
+        with DBA() as db:
             res = []
             itor = db.iterator(prefix=KEY(f'{APSC}'))
             for key, value in itor:
@@ -169,7 +166,7 @@ class LevelDBJobStore(BaseJobStore):
         return get_object(job_id)
 
     def remove_all_jobs(self):
-        with dba as db:
+        with DBA() as db:
             itor = db.iterator(prefix=KEY(f'{APSC}'))
             for key in itor:
                 delete(key)

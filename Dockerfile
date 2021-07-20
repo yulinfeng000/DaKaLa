@@ -8,8 +8,10 @@ COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
-ENV APP_SECRET_KEY='9438e1d80dc365bc4609df5e3269a4b01845d587f51cd6d7a222fc0d0e0b809d'
-ENV APP_ADMIN_KEY='Tomcat!'
+ENV APP_SECRET_KEY='123456'
+
+ENV APP_ADMIN_KEY=''
+
 RUN mkdir -p /dakala/app
 
 RUN mkdir -p /dakala/data/log

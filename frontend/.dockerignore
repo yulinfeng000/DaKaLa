@@ -3,5 +3,5 @@ build
 .vscode
 .DS_Store
 .env.*
-.package-lock.json
+package-lock.json
 yarn.lock
