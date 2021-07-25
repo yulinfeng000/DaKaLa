@@ -12,7 +12,7 @@ services:
         ports:
             - 8000:8000
     frontend:
-        image: yulinfeng/dakala2-frontend:uni-1.0
+        image: yulinfeng/dakala2-frontend:uni-1.1
         container_name: dk2f
         environment: 
             REACT_APP_BASE_URL: http://your.api.com #your daka api url

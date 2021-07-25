@@ -1,6 +1,6 @@
-import axios from 'axios'
-import cookies from '../cookies'
-import https from 'https'
+import axios from "axios"
+import cookies from "../cookies"
+import https from "https"
 
 const BASE_URL = process.env.REACT_APP_BASE_URL
   ? process.env.REACT_APP_BASE_URL
@@ -15,16 +15,16 @@ const Axios = axios.create({
 
 //request interceptor
 Axios.interceptors.request.use((config) => {
-  const token = cookies.get('token')
+  const token = cookies.get("token")
   if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`
+    config.headers["Authorization"] = `Bearer ${token}`
   }
   return config
 })
 
 //response interceptor
 Axios.interceptors.response.use((resp) => {
-  if (resp.headers['content-type'] === 'application/json') {
+  if (resp.headers["content-type"] === "application/json") {
     if (resp.status !== 200 || resp.data.code !== 200)
       return Promise.reject(resp.data)
 

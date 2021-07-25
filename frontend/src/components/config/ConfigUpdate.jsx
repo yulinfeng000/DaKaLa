@@ -8,11 +8,11 @@ import {
   ActivityIndicator,
   Toast,
   Switch,
-} from 'antd-mobile'
-import dayjs from '../../lib/datetime/date'
-import { observable, runInAction } from 'mobx'
-import { observer } from 'mobx-react-lite'
-import { useState } from 'react'
+} from "antd-mobile"
+import dayjs from "../../lib/datetime/date"
+import { observable, runInAction } from "mobx"
+import { observer } from "mobx-react-lite"
+import { useState } from "react"
 import {
   cityStatusValue,
   homeStatusValue,
@@ -23,11 +23,11 @@ import {
   applicationEndDayValue,
   applicationStartTimeValue,
   applicationEndTimeValue,
-} from '../../lib/util/data'
-import Axios from '../../lib/axios'
-import { useEffect } from 'react'
-import { current_stu, student_conf as student } from '../../store'
-import { debounce } from 'lodash'
+} from "../../lib/util/data"
+import Axios from "../../lib/axios"
+import { useEffect } from "react"
+import { current_stu, student_conf as student } from "../../store"
+import { debounce } from "lodash"
 
 export const confLoading = observable.box(true)
 
@@ -56,8 +56,8 @@ function ConfigUpdate({ stuid }) {
     Axios.post(`/stu/${stuid}/dakatrigger/update`, { daka_trigger: e })
       .then((resp) => {
         student.updateTrigger(resp.trigger)
-        if (resp.trigger) Toast.success('开启每日打卡')
-        else Toast.success('关闭每日打卡')
+        if (resp.trigger) Toast.success("开启每日打卡")
+        else Toast.success("关闭每日打卡")
       })
       .catch((err) => {
         student.updateTrigger(!e)
@@ -67,7 +67,7 @@ function ConfigUpdate({ stuid }) {
   }
 
   const handlerUpdateBtnClick = debounce(() => {
-    console.log('do update')
+    console.log("do update")
     const data = {
       stuid: student.stuid,
       cityStatus: student.cityStatus[0],
@@ -89,7 +89,7 @@ function ConfigUpdate({ stuid }) {
       runInAction(() => {
         current_stu.set({ stuid, config: resp.config })
       })
-      Toast.success('更新成功')
+      Toast.success("更新成功")
     })
   }, 500)
 
@@ -187,6 +187,7 @@ function ConfigUpdate({ stuid }) {
         >
           <List.Item arrow="horizontal">家庭成员状况</List.Item>
         </Picker>
+      
       </List>
 
       <List renderHeader={() => <b>申请出校</b>}>
@@ -257,7 +258,7 @@ function ConfigUpdate({ stuid }) {
             <br />
             从“开始时间”开始，每隔“间隔天数”申请一次出校
             <br />
-            <div style={{ fontSize: '12px' }}>
+            <div style={{ fontSize: "12px" }}>
               Q:如何预约一次性申请? 设置开始时间并将申请间隔天数设为-1
             </div>
           </>
@@ -272,7 +273,7 @@ function ConfigUpdate({ stuid }) {
           }
         >
           申请出校开关
-          <List.Item.Brief style={{ fontSize: '12px' }}>
+          <List.Item.Brief style={{ fontSize: "12px" }}>
             关闭后打卡将不会填写申请出校
           </List.Item.Brief>
         </List.Item>
@@ -282,7 +283,7 @@ function ConfigUpdate({ stuid }) {
           onOk={(e) => {
             runInAction(
               () =>
-                (student.scheduler_start_time = dayjs(e).format('YYYY-MM-DD')),
+                (student.scheduler_start_time = dayjs(e).format("YYYY-MM-DD"))
             )
           }}
         >

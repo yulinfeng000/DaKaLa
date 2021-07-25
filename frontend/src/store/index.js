@@ -1,10 +1,10 @@
-import { observable, action, computed } from 'mobx'
-import dayjs from '../lib/datetime/date'
+import { observable, action, computed } from "mobx"
+import dayjs from "../lib/datetime/date"
 export const current_stu = observable.box(null)
 export const student_conf = observable.object(
   {
-    stuid: '',
-    cityStatus: '',
+    stuid: "",
+    cityStatus: "",
     workingPlace: null,
     healthStatus: null,
     livingStatus: null,
@@ -50,7 +50,7 @@ export const student_conf = observable.object(
     replace: action,
     updateTrigger: action,
     applicationEnabled: computed,
-  },
+  }
 )
 
 export const dakaInfo = observable.box(null)
