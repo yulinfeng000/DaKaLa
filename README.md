@@ -31,7 +31,7 @@
       services:
         dakala:
             container_name: dakala
-            image: yulinfeng/dakala2:1.9
+            image: yulinfeng/dakala2:1.9.2
             init: true
             environment:
                 APP_SECRET_KEY:  # jwt 密钥

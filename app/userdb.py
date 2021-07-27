@@ -3,8 +3,12 @@ import os
 from typing import Dict, Optional
 import plyvel
 import logging
+from app.lock import NamedAtomicLock
 
 logger = logging.getLogger('gunicorn.error')
+
+# 由于leveldb设计一次只能由一个线程访问，现设置访问锁
+DB_ACC_LOCK = NamedAtomicLock('leveldbAccessLock')
 
 DB_LOCATION = os.path.abspath("./data/db")
 logger.info(f"db文件地址：{DB_LOCATION}")
@@ -20,12 +24,14 @@ DAKA_TRIGGER = "DAKA_TRIGGER_"
 class DBA():
 
     def __enter__(self) -> plyvel.DB:
+        DB_ACC_LOCK.acquire(timeout=15)
         self.db = plyvel.DB(DB_LOCATION, create_if_missing=True)
         # logger.debug("db connected")
         return self.db
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.db.close()
+        DB_ACC_LOCK.release()
         # logger.debug("db exited")
 
 
