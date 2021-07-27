@@ -3,8 +3,6 @@ import os
 from typing import Dict, Optional
 import plyvel
 import logging
-from apscheduler.jobstores.base import BaseJobStore
-from apscheduler.job import Job
 
 logger = logging.getLogger('gunicorn.error')
 
@@ -54,7 +52,8 @@ def get_object(key) -> Optional[Dict]:
 
 def put_object(key, value):
     with DBA() as db:
-        db.put(KEY(key), VALUE(json.dumps(value, sort_keys=True)))
+        db.put(KEY(key), VALUE(json.dumps(
+            value, sort_keys=True, ensure_ascii=False)))
 
 
 def put_value(key, value):
@@ -112,9 +111,10 @@ def db_get_last_scheduler_exec_time(stuid):
 
 def find_all_user():
     with DBA() as db:
-        itor = db.iterator(prefix=KEY(f'{STUDENT_TABLE}'))
-        res = [json.loads(v) for _, v in itor]
-        return res
+        with db.snapshot() as sp:
+            with sp.iterator(prefix=KEY(f'{STUDENT_TABLE}')) as itor:
+                res = [json.loads(v) for _, v in itor]
+                return res
 
 
 def db_put_user_ip(stuid, ip):
@@ -127,9 +127,10 @@ def db_get_user_last_ip(stuid):
 
 def clean_all_user_last_scheduler_exec_time():
     with DBA() as db:
-        itor = db.iterator(prefix=KEY(f'{LAST_SCHEDULER_EXEC_TIME}'))
-        for key in itor:
-            delete(key)
+        with db.snapshot() as sp:
+            with sp.iterator(prefix=KEY(f'{LAST_SCHEDULER_EXEC_TIME}')) as itor:
+                for key in itor:
+                    delete(key)
 
 
 def db_get_user_daka_trigger(stuid):
@@ -145,39 +146,3 @@ def db_put_user_daka_trigger(stuid, v):
         put_value(f'{DAKA_TRIGGER}{stuid}', "True")
     else:
         put_value(f'{DAKA_TRIGGER}{stuid}', "False")
-
-
-class LevelDBJobStore(BaseJobStore):
-    def __init__(self) -> None:
-        super().__init__()
-
-    def add_job(self, job: Job):
-        put_object(f"{APSC}{job.id}", job)
-
-    def get_all_jobs(self):
-        with DBA() as db:
-            res = []
-            itor = db.iterator(prefix=KEY(f'{APSC}'))
-            for key, value in itor:
-                res.append(value)
-            return res
-
-    def lookup_job(self, job_id):
-        return get_object(job_id)
-
-    def remove_all_jobs(self):
-        with DBA() as db:
-            itor = db.iterator(prefix=KEY(f'{APSC}'))
-            for key in itor:
-                delete(key)
-
-    def remove_job(self, job_id):
-        delete(job_id)
-
-    def update_job(self, job):
-        put_object(f"{APSC}{job.id}", job)
-
-    def get_due_jobs(self, now):
-        from operator import attrgetter
-        jobs = self.get_all_jobs()
-        sorted(jobs, key=attrgetter('next_run_time'))

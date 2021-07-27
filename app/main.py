@@ -39,6 +39,8 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # jwt auth init
 app.config['JWT_SECRET_KEY'] = APP_SECRET_KEY               # jwt secret key
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)  # jwt expire time
+# jsonify config
+app.config['JSON_AS_ASCII'] = False
 
 
 # scheduler init
