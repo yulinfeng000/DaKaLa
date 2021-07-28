@@ -3,12 +3,7 @@ import os
 from typing import Dict, Optional
 import plyvel
 import logging
-from app.lock import NamedAtomicLock
-
 logger = logging.getLogger('gunicorn.error')
-
-# 由于leveldb设计一次只能由一个线程访问，现设置访问锁
-DB_ACC_LOCK = NamedAtomicLock('leveldbAccessLock')
 
 DB_LOCATION = os.path.abspath("./data/db")
 logger.info(f"db文件地址：{DB_LOCATION}")
@@ -23,16 +18,17 @@ DAKA_TRIGGER = "DAKA_TRIGGER_"
 
 class DBA():
 
+    def __init__(self) -> None:
+        self.client = plyvel.DB(DB_LOCATION, create_if_missing=True)
+
     def __enter__(self) -> plyvel.DB:
-        DB_ACC_LOCK.acquire(timeout=15)
-        self.db = plyvel.DB(DB_LOCATION, create_if_missing=True)
-        # logger.debug("db connected")
-        return self.db
+        return self.client
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.db.close()
-        DB_ACC_LOCK.release()
-        # logger.debug("db exited")
+        pass
+
+
+dba = DBA()
 
 
 def KEY(key):
@@ -44,12 +40,12 @@ def VALUE(value):
 
 
 def delete(key):
-    with DBA() as db:
+    with dba as db:
         db.delete(KEY(key))
 
 
 def get_object(key) -> Optional[Dict]:
-    with DBA() as db:
+    with dba as db:
         res = db.get(KEY(key))
         if res is None:
             return None
@@ -57,18 +53,18 @@ def get_object(key) -> Optional[Dict]:
 
 
 def put_object(key, value):
-    with DBA() as db:
+    with dba as db:
         db.put(KEY(key), VALUE(json.dumps(
             value, sort_keys=True, ensure_ascii=False)))
 
 
 def put_value(key, value):
-    with DBA() as db:
+    with dba as db:
         db.put(KEY(key), VALUE(value))
 
 
 def get_value(key):
-    with DBA() as db:
+    with dba as db:
         res = db.get(KEY(key))
         if res is None:
             return res
@@ -116,7 +112,7 @@ def db_get_last_scheduler_exec_time(stuid):
 
 
 def find_all_user():
-    with DBA() as db:
+    with dba as db:
         with db.snapshot() as sp:
             with sp.iterator(prefix=KEY(f'{STUDENT_TABLE}')) as itor:
                 res = [json.loads(v) for _, v in itor]
@@ -132,7 +128,7 @@ def db_get_user_last_ip(stuid):
 
 
 def clean_all_user_last_scheduler_exec_time():
-    with DBA() as db:
+    with dba as db:
         with db.snapshot() as sp:
             with sp.iterator(prefix=KEY(f'{LAST_SCHEDULER_EXEC_TIME}')) as itor:
                 for key in itor:

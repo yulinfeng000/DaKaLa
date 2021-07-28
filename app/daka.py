@@ -127,10 +127,9 @@ def dakaing(link, driver, student, config):
         try:
             alert_window = driver.switch_to.alert
             alert_window.accept()
-        except NoAlertPresentException:
-            daka_logger.warning(
+        except NoAlertPresentException as e:
+            daka_logger.warn(
                 f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-
             form_body = WebDriverWait(driver, 5).until(
                 EC.visibility_of_element_located((By.ID, "wjTA"))
             )
@@ -182,9 +181,10 @@ def dakaing(link, driver, student, config):
             f"{STU_ID}: 打卡成功,时间为{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')}")
         # close browser window
 
-    except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException:
-        daka_logger.warning(
+    except NoSuchElementException or NoAlertPresentException or UnexpectedAlertPresentException or InvalidSelectorException or InvalidElementStateException as e:
+        daka_logger.warn(
             f'学号 {STU_ID},打卡错误,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}')
+        daka_logger.warn(e)
         userdb.db_put_dk_callback_info(
             STU_ID, f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")},请尝试手动打卡或考虑打卡时间是否过晚')
 
@@ -250,8 +250,9 @@ def dakala(student, config: dict):
                 f"{STU_ID}没有找到今天的打卡链接!!!,今天是{datetime.now()},\n{str([link.text for link in linkList[:5]])}")
             userdb.db_put_dk_callback_info(
                 STU_ID, f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%Y/%m/%d")}，请检查教务处密码是否错误')
-    except Exception:
+    except Exception as e:
         daka_logger.warn(f'{STU_ID}打卡发生了错误')
+        daka_logger.warn(e)
         userdb.db_put_dk_callback_info(STU_ID, "打卡系统发生错误,请及时联系作者")
     finally:
         driver.quit()
