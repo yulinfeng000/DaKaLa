@@ -1,22 +1,23 @@
 services:
-    dakala:
-        container_name: dakala
-        image: yulinfeng/dakala2:1.9.3
-        init: true
-        environment: 
-            APP_SECRET_KEY:  # your app jwt key
-            APP_ADMIN_KEY:  # your admin  key
-            TZ: "Asia/Shanghai" # do not edit !
-        volumes:
-            - ./data:/dakala/data
-        ports:
-            - 8000:8000
-    frontend:
-        image: yulinfeng/dakala2-frontend:uni-1.1
-        container_name: dk2f
-        environment: 
-            REACT_APP_BASE_URL: http://your.api.com #your daka api url
-        ports:
-          - 5000:5000
-        depends_on:
-          - dakala
+  dakala:
+    container_name: dakala
+    shm_size: 2gb
+    image: yulinfeng/dakala2:1.9.3
+    init: true
+    environment:
+      APP_SECRET_KEY: # your app jwt key
+      APP_ADMIN_KEY: # your admin  key
+      TZ: "Asia/Shanghai" # do not edit !
+    volumes:
+      - ./data:/dakala/data
+    ports:
+      - 8000:8000
+  frontend:
+    image: yulinfeng/dakala2-frontend:uni-1.1
+    container_name: dk2f
+    environment:
+      REACT_APP_BASE_URL: http://your.api.com #your daka api url
+    ports:
+      - 5000:5000
+    depends_on:
+      - dakala
