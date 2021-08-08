@@ -25,13 +25,14 @@
     |
     |-docker-compose.yml
   ```
-      docker-compose.yml 文件内容
-      请不要拆分该文件分别启动镜像
+  docker-compose.yml 文件内容
+  请不要拆分该文件分别启动镜像
+
       ```yaml
       services:
         dakala:
             container_name: dakala
-            image: yulinfeng/dakala2:1.9.4
+            image: yulinfeng/dakala2:1.9.5
             init: true
             environment:
                 APP_SECRET_KEY:  # jwt 密钥
@@ -51,6 +52,7 @@
             depends_on:
               - dakala
       ```
+
   执行`docker-compose up -d`启动容器
 
 ## 本地搭建运行环境开发
