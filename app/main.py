@@ -4,12 +4,14 @@ import os
 import logging
 from flask_jwt_extended.utils import create_access_token
 from werkzeug.security import safe_str_cmp
-
-from concurrent.futures import ThreadPoolExecutor
+import fcntl
+from concurrent.futures import ThreadPoolExecutor, thread
 from flask import Flask, request, send_file, jsonify
 from flask_jwt_extended import JWTManager, jwt_required, current_user
 from flask_apscheduler import APScheduler
+from apscheduler.schedulers.gevent import GeventScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+import atexit
 from flask_cors import CORS
 
 from app.daka import dakala
@@ -43,11 +45,11 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)  # jwt expire time
 app.config['JSON_AS_ASCII'] = False
 
 
+# thread_pool
+thread_pool = ThreadPoolExecutor(os.cpu_count()+2)
+
 # scheduler init
 JOBS_STORE_LOCATION = os.path.abspath("./data/db/job.db")
-if os.path.exists(JOBS_STORE_LOCATION):
-    app.logger.info('发现旧的定时任务文件，删除')
-    os.remove(JOBS_STORE_LOCATION)
 app.logger.info(f"定时任务文件位置: {JOBS_STORE_LOCATION}")
 
 
@@ -58,12 +60,30 @@ class SchedulerConfig:
 
 
 app.config.from_object(SchedulerConfig())
-scheduler = APScheduler(app=app,)
-scheduler.start()
+scheduler = APScheduler(scheduler=GeventScheduler())
+
+SCHEDULE_LOCK_FILE = os.path.abspath("./data/db/schedule.lock")
+app.logger.info(f'锁文件位置: {SCHEDULE_LOCK_FILE}')
 
 
-# thread_pool
-thread_pool = ThreadPoolExecutor(os.cpu_count()+2)
+def register():
+    f = open(SCHEDULE_LOCK_FILE, 'wb')
+    try:
+        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        scheduler.init_app(app)
+        scheduler.start()
+        app.logger.info("定时任务启动")
+    except:
+        pass
+
+    def unlock():
+        fcntl.flock(f, fcntl.LOCK_UN)
+        f.close()
+
+    atexit.register(unlock)
+
+
+register()
 
 
 @app.route("/stu/login", methods=['POST'])
@@ -274,7 +294,12 @@ def admin_daka_for_all():
 
 
 @scheduler.task('cron', id="interval_daka", timezone='Asia/Shanghai', day_of_week='0-6', hour=8, minute=10, misfire_grace_time=36000)
-# @scheduler.task('cron',id="d",minute='*') # for test
+# @scheduler.task('cron', id="d", minute='*')  # for test
 def interval_daka():
     app.logger.info(f'每日打卡任务执行 {datetime.now().strftime("%Y/%m/%d")}')
     thread_pool.submit(daka_worker)
+
+
+# @scheduler.task('cron', id="d", minute='*')  # for test
+# def test_schedule():
+#    app.logger.info(f'每日打卡任务执行 {datetime.now().isoformat()}')
