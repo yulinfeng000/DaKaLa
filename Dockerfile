@@ -30,4 +30,4 @@ COPY ./gunicorn.conf.py ./gunicorn.conf.py
 
 EXPOSE 8000
 
-CMD [ "gunicorn","-b",":8000","-k","gevent","app.main:app","--log-config","app/log.conf","--preload"]
+CMD ["gunicorn","app.main:app","--log-config","app/log.conf"]
