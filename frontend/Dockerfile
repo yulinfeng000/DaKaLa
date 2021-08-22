@@ -15,7 +15,7 @@ RUN npm install -g serve
 
 COPY ./ ./
 
-RUN npm install
+RUN npm install --registry https://registry.npm.taobao.org/
 
 # 启动服务器
 ENTRYPOINT ["sh","docker-entrypoint.sh"]

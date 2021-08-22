@@ -4,7 +4,7 @@ export const current_stu = observable.box(null)
 export const student_conf = observable.object(
   {
     stuid: "",
-    cityStatus: "",
+    cityStatus: null,
     workingPlace: null,
     healthStatus: null,
     livingStatus: null,
@@ -54,3 +54,7 @@ export const student_conf = observable.object(
 )
 
 export const dakaInfo = observable.box(null)
+
+export const dakaCombo = observable.box(null)
+
+export const dakaRecords = observable.array([])

@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 from typing import Dict, Optional
@@ -12,6 +13,7 @@ DB_ACC_LOCK = NamedAtomicLock("leveldbAccessLock")
 
 DB_LOCATION = os.path.abspath("./data/db")
 logger.info(f"db文件地址：{DB_LOCATION}")
+
 STUDENT_TABLE = "STUDENT_"
 STUDENT_CONFIG_TABLE = "CONFIG_TABLE_"
 DAKA_CALLBACK_INFO = "DAKA_CALLBACK_INFO_"
@@ -19,6 +21,9 @@ USER_IP = "USER_IP_"
 LAST_SCHEDULER_EXEC_TIME = "LAST_SCHEDULER_EXEC_TIME_"
 APSC = "APSC_"
 DAKA_TRIGGER = "DAKA_TRIGGER_"
+DAKA_COMBO = "DAKA_COMBO_"
+DAKA_RECORDS = "DAKA_RECORDS_"
+LAST_DAKA_REFLUSH_RECORDS_TIME = "LAST_DAKA_REFLUSH_RECORDS_TIME_"
 
 
 class DBA:
@@ -150,3 +155,36 @@ def db_put_user_daka_trigger(stuid, v):
         put_value(f"{DAKA_TRIGGER}{stuid}", "True")
     else:
         put_value(f"{DAKA_TRIGGER}{stuid}", "False")
+
+
+def db_put_user_daka_combo(stuid, count):
+    put_value(f"{DAKA_COMBO}{stuid}", str(count))
+
+
+def db_get_user_daka_combo(stuid):
+    v = get_value(f"{DAKA_COMBO}{stuid}")
+    if not v:
+        return None
+    return int(v)
+
+
+def db_put_user_daka_records(stuid, records):
+    put_object(f"{DAKA_RECORDS}{stuid}", records)
+
+
+def db_get_user_daka_records(stuid):
+    v = get_object(f"{DAKA_RECORDS}{stuid}")
+    if not v:
+        return []
+    return v
+
+
+def db_put_user_reflush_daka_record_time(stuid, time: datetime):
+    put_value(f"{LAST_DAKA_REFLUSH_RECORDS_TIME}{stuid}", str(int(time.timestamp())))
+
+
+def db_get_user_relfush_daka_record_time(stuid):
+    v = get_value(f"{LAST_DAKA_REFLUSH_RECORDS_TIME}{stuid}")
+    if not v:
+        return 0
+    return int(v)

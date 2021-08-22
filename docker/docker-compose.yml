@@ -2,7 +2,7 @@ services:
   dakala:
     container_name: dakala
     shm_size: 2gb
-    image: yulinfeng/dakala2:1.9.5
+    image: yulinfeng/dakala2:1.9.6
     init: true
     environment:
       APP_SECRET_KEY: # your app jwt key
@@ -13,7 +13,7 @@ services:
     ports:
       - 8000:8000
   frontend:
-    image: yulinfeng/dakala2-frontend:uni-1.1
+    image: yulinfeng/dakala2-frontend:uni-1.2
     container_name: dk2f
     environment:
       REACT_APP_BASE_URL: http://your.api.com #your daka api url

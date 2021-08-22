@@ -24,7 +24,7 @@ WORKDIR /dakala
 
 VOLUME /dakala/data
 
-COPY ./app/* ./app/
+COPY ./app/ ./app/
 
 COPY ./gunicorn.conf.py ./gunicorn.conf.py
 

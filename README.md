@@ -15,6 +15,7 @@
 - 现成镜像
   找一个空文件夹中建立 data/db,data/log,data/pic 三个文件夹并创建文件 docker-compose.yml
   结构如下图所示
+
   ```
    /-
     |
@@ -25,6 +26,7 @@
     |
     |-docker-compose.yml
   ```
+
   docker-compose.yml 文件内容
   请不要拆分该文件分别启动镜像
 
@@ -32,7 +34,7 @@
       services:
         dakala:
             container_name: dakala
-            image: yulinfeng/dakala2:1.9.5
+            image: yulinfeng/dakala2:1.9.6
             init: true
             environment:
                 APP_SECRET_KEY:  # jwt 密钥
@@ -43,7 +45,7 @@
             ports:
                 - 8000:8000
         frontend:
-            image: yulinfeng/dakala2-frontend:uni-1.1
+            image: yulinfeng/dakala2-frontend:uni-1.2
             container_name: dk2f
             environment:
             	REACT_APP_BASE_URL: https://api.xxx.com # 你的服务器地址
