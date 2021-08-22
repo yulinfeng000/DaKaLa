@@ -7,7 +7,6 @@ import Axios from "../../lib/axios"
 import DakaInfo from "../../components/daka-info/DakaInfo"
 import dayjs from "../../lib/datetime/date"
 import { debounce } from "lodash"
-import DakaRecord from "../../components/daka-record/DakaRecord"
 
 function HomePage() {
   const history = useHistory()
@@ -28,8 +27,6 @@ function HomePage() {
       <NavBar>主页</NavBar>
       <WhiteSpace />
       <DakaInfo stuid={stu.stuid} />
-      <WhiteSpace />
-      <DakaRecord stuid={stu.stuid} />
       <WhiteSpace />
       <Button onClick={debounce(handleDakaBtnClick, 500)}>立即打卡</Button>
       <WhiteSpace />

@@ -20,7 +20,7 @@ def _login(student):
         # print("没有设置教务处用户名和密码")
         return False
 
-    driver = bootstrap_chrome(headless=False)  # TODO 上线时改为无头
+    driver = bootstrap_chrome()  # TODO 上线时改为无头
     driver.get("http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netks/sj.asp")
     try:
         username_input = WebDriverWait(driver, 2).until(

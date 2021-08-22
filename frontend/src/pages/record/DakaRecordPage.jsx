@@ -1,6 +1,8 @@
-import { NavBar, Icon, List } from "antd-mobile"
+import { NavBar, Icon, List, PullToRefresh, Toast } from "antd-mobile"
+import { throttle } from "lodash"
 import { runInAction } from "mobx"
 import { observer } from "mobx-react-lite"
+import { useRef } from "react"
 import { useEffect } from "react"
 import { useHistory } from "react-router-dom"
 import Axios from "../../lib/axios"
@@ -21,9 +23,28 @@ function DakaRecordPage() {
     })
   }, [student.stuid])
 
+  const handleRefreshBtnClick = throttle(() => {
+    Axios.post(`/stu/${student.stuid}/dkrecords/reflush`)
+      .then((resp) => {
+        runInAction(() => {
+          dakaRecords.replace(resp.records)
+          dakaCombo.set(resp.combo)
+        })
+        Toast.success(resp.msg)
+      })
+      .catch((err) => {
+        Toast.fail(err.msg)
+      })
+  }, 5000)
+
   const renderRecordList = () => {
-    return dakaRecords.map((it) => <List.Item extra={it[0]}>{it[1]}</List.Item>)
+    return dakaRecords.map((it) => (
+      <List.Item extra={it[0]} key={it[1]}>
+        {it[1]}
+      </List.Item>
+    ))
   }
+  const ref = useRef()
 
   return (
     <>
@@ -33,7 +54,19 @@ function DakaRecordPage() {
       >
         打卡记录
       </NavBar>
-      <List renderHeader={() => "打卡记录"}>{renderRecordList()}</List>
+      <PullToRefresh
+        style={{
+          height: document.documentElement.clientHeight,
+          overflow: "auto",
+        }}
+        damping={60}
+        direction="down"
+        distanceToRefresh={window.devicePixelRatio * 25}
+        onRefresh={handleRefreshBtnClick}
+        ref={ref}
+      >
+        <List renderHeader={() => "打卡记录"}>{renderRecordList()}</List>
+      </PullToRefresh>
     </>
   )
 }
