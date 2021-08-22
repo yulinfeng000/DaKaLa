@@ -1,5 +1,8 @@
-from datetime import timedelta
-from datetime import datetime
+import json
+from datetime import timedelta, datetime
+from flask_apscheduler import APScheduler
+from apscheduler.schedulers.gevent import GeventScheduler
+
 import os
 import logging
 from flask_jwt_extended.utils import create_access_token
@@ -8,13 +11,11 @@ import fcntl
 from concurrent.futures import ThreadPoolExecutor, thread
 from flask import Flask, request, send_file, jsonify
 from flask_jwt_extended import JWTManager, jwt_required, current_user
-from flask_apscheduler import APScheduler
-from apscheduler.schedulers.gevent import GeventScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 import atexit
 from flask_cors import CORS
-
-from app.daka import dakala
+from app.service.daka import dakala
+from app.service.record import dkrecords
 from app.config import APP_ADMIN_KEY, APP_SECRET_KEY
 import app.userdb as userdb
 
@@ -44,6 +45,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)  # jwt expire time
 # jsonify config
 app.config["JSON_AS_ASCII"] = False
 
+scheduler = APScheduler(scheduler=GeventScheduler())
 
 # thread_pool
 thread_pool = ThreadPoolExecutor(os.cpu_count() + 2)
@@ -61,7 +63,7 @@ class SchedulerConfig:
 
 
 app.config.from_object(SchedulerConfig())
-scheduler = APScheduler(scheduler=GeventScheduler())
+
 
 SCHEDULE_LOCK_FILE = os.path.abspath("./data/db/schedule.lock")
 app.logger.info(f"锁文件位置: {SCHEDULE_LOCK_FILE}")
@@ -196,7 +198,7 @@ def user_daka(stuid):
     )
     student = userdb.db_get_user_by_stuid(stuid)
     config = userdb.db_get_user_config(stuid)
-    thread_pool.submit(dakala, student, config)
+    thread_pool.submit(daka_task, student, config)
     return jsonify({"msg": "打卡命令执行成功", "code": 200})
 
 
@@ -308,19 +310,30 @@ def daka_trigger_info(stuid):
     return jsonify({"msg": "查询成功", "code": 200, "trigger": flag})
 
 
-def daka_worker():
-    all_stu = userdb.find_all_user()
-    for stu in all_stu:
-        trigger = userdb.db_get_user_daka_trigger(stu["stuid"])
-        if trigger is None or trigger is True:
-            config = userdb.db_get_user_config(stu["stuid"])
-            thread_pool.submit(dakala, stu, config)
-        else:
-            sid = stu["stuid"]
-            userdb.db_put_dk_callback_info(
-                sid, f'{datetime.now().strftime("%Y/%m/%d")} 已暂停打卡'
-            )
-            app.logger.info(f"{sid} 关闭了每日打卡")
+@app.route("/stu/<stuid>/dkrecords/info", methods=["GET"])
+@jwt_required()
+def get_dk_record(stuid):
+    if not safe_str_cmp(stuid, current_user["stuid"]):
+        return jsonify({"msg": "不允许访问", "code": 401})
+    combo = userdb.db_get_user_daka_combo(stuid)
+    records = userdb.db_get_user_daka_records(stuid)
+    return jsonify({"msg": "查询成功", "code": 200, "combo": combo, "records": records})
+
+
+@app.route("/stu/<stuid>/dkrecords/reflush", methods=["POST"])
+@jwt_required()
+def reflush_dk_record(stuid):
+    if not safe_str_cmp(stuid, current_user["stuid"]):
+        return jsonify({"msg": "不允许访问", "code": 401})
+    lasttime = userdb.db_get_user_relfush_daka_record_time(stuid)
+    combo = userdb.db_get_user_daka_combo(stuid)
+    records = userdb.db_get_user_daka_records(stuid)
+    if lasttime + 60 > int(datetime.now().timestamp()):
+        return jsonify({"msg": "刷新成功", "code": 200, "records": records, "combo": combo})
+    student = userdb.db_get_user_by_stuid(stuid)
+    userdb.db_put_user_reflush_daka_record_time(stuid, datetime.now())
+    thread_pool.submit(dkrecords, student)
+    return jsonify({"msg": "刷新成功", "code": 200, "records": records, "combo": combo})
 
 
 @app.route("/admin/daka/all", methods=["GET"])
@@ -337,6 +350,27 @@ def admin_daka_for_all():
     return jsonify({"msg": "执行成功", "code": 200})
 
 
+def daka_task(student, config):
+    dakala(student, config)
+    dkrecords(student)
+    userdb.db_put_user_reflush_daka_record_time(student["stuid"], datetime.now())
+
+
+def daka_worker():
+    all_stu = userdb.find_all_user()
+    for stu in all_stu:
+        trigger = userdb.db_get_user_daka_trigger(stu["stuid"])
+        if trigger is None or trigger is True:
+            config = userdb.db_get_user_config(stu["stuid"])
+            thread_pool.submit(daka_task, stu, config)
+        else:
+            sid = stu["stuid"]
+            userdb.db_put_dk_callback_info(
+                sid, f'{datetime.now().strftime("%Y/%m/%d")} 已暂停打卡'
+            )
+            app.logger.info(f"{sid} 关闭了每日打卡")
+
+
 @scheduler.task(
     "cron",
     id="interval_daka",
@@ -350,8 +384,3 @@ def admin_daka_for_all():
 def interval_daka():
     app.logger.info(f'每日打卡任务执行 {datetime.now().strftime("%Y/%m/%d")}')
     thread_pool.submit(daka_worker)
-
-
-# @scheduler.task('cron', id="d", minute='*')  # for test
-# def test_schedule():
-#    app.logger.info(f'每日打卡任务执行 {datetime.now().isoformat()}')

@@ -15,3 +15,25 @@ export const useCurrentStuPhoto = () => {
     error,
   }
 }
+export const useDakaRecords = () => {
+  const student = getItem("student")
+  const { data, error } = useSWR(
+    `/stu/${student.stuid}/dkrecords/info`,
+    async (url) => {
+      const resp = await Axios.get(url)
+      return {
+        //@ts-ignore
+        combo: resp.combo,
+        //@ts-ignore
+        records: resp.records,
+      }
+    }
+  )
+
+  return {
+    combo: data.combo,
+    records: data.records,
+    loading: !data,
+    error,
+  }
+}
