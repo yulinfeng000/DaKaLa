@@ -2,7 +2,6 @@ import { NavBar, Icon, List, PullToRefresh, Toast } from "antd-mobile"
 import { throttle } from "lodash"
 import { runInAction } from "mobx"
 import { observer } from "mobx-react-lite"
-import { useRef } from "react"
 import { useEffect } from "react"
 import { useHistory } from "react-router-dom"
 import Axios from "../../lib/axios"
@@ -15,7 +14,6 @@ function DakaRecordPage() {
 
   useEffect(() => {
     Axios.get(`/stu/${student.stuid}/dkrecords/info`).then((resp) => {
-      console.log(resp)
       runInAction(() => {
         dakaCombo.set(resp.combo)
         dakaRecords.replace(resp.records)
@@ -44,16 +42,9 @@ function DakaRecordPage() {
       </List.Item>
     ))
   }
-  const ref = useRef()
 
   return (
     <>
-      <NavBar
-        icon={<Icon type="left" />}
-        onLeftClick={() => history.push("/app/home")}
-      >
-        打卡记录
-      </NavBar>
       <PullToRefresh
         style={{
           height: document.documentElement.clientHeight,
@@ -63,8 +54,13 @@ function DakaRecordPage() {
         direction="down"
         distanceToRefresh={window.devicePixelRatio * 25}
         onRefresh={handleRefreshBtnClick}
-        ref={ref}
       >
+        <NavBar
+          icon={<Icon type="left" />}
+          onLeftClick={() => history.push("/app/home")}
+        >
+          打卡记录
+        </NavBar>
         <List renderHeader={() => "打卡记录"}>{renderRecordList()}</List>
       </PullToRefresh>
     </>

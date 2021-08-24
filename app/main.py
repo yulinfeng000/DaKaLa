@@ -1,4 +1,3 @@
-import json
 from datetime import timedelta, datetime
 from flask_apscheduler import APScheduler
 from apscheduler.schedulers.gevent import GeventScheduler
@@ -8,7 +7,7 @@ import logging
 from flask_jwt_extended.utils import create_access_token
 from werkzeug.security import safe_str_cmp
 import fcntl
-from concurrent.futures import ThreadPoolExecutor, thread
+from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, request, send_file, jsonify
 from flask_jwt_extended import JWTManager, jwt_required, current_user
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
