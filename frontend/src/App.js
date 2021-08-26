@@ -8,6 +8,7 @@ import AuthRoute from "./lib/router/AuthRoute"
 import ConfigPage from "./pages/config/ConfigPage"
 import PhotoPage from "./pages/photo/PhotoPage"
 import DakaRecordPage from "./pages/record/DakaRecordPage"
+import NotifySettingPage from "./pages/notify/NotifySettingPage"
 
 function App() {
   return (
@@ -34,6 +35,12 @@ function App() {
         <AuthRoute
           component={DakaRecordPage}
           path="/app/records"
+          redirect="/login"
+          exact
+        />
+        <AuthRoute
+          component={NotifySettingPage}
+          path="/app/notify"
           redirect="/login"
           exact
         />

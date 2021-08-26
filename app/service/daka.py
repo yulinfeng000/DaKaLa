@@ -9,6 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 
 from selenium.webdriver.support import expected_conditions as EC
+from app.service.push import push_msg_to_user
+from app.config import APP_URL
 import logging
 
 daka_logger = logging.getLogger("gunicorn.error")
@@ -18,6 +20,12 @@ daka_logger.info(f"图片存放地址：{PIC_LOCATION}")
 
 DAKA_URL = "http://jszx-jxpt.cuit.edu.cn/Jxgl/Xs/netKs/editSj.asp?UTp=Xs&Tx=33_1&ObjId="
 
+
+def push_daka_error_msg(stuid):
+    push_msg_to_user(
+        stuid,
+        f"{datetime.now().strftime('%Y-%m-%d, %H:%M:%S')},打卡没有成功，请及时手动打卡",
+    )
 
 def is_scheduler_exec(config: dict, stuid):
 
@@ -196,6 +204,7 @@ def dakaing(link, driver, student, config):
             STU_ID,
             f'打卡失败,时间为{datetime.now().strftime("%m/%d/%Y, %H:%M:%S")},请尝试手动打卡或考虑打卡时间是否过晚',
         )
+        push_daka_error_msg(STU_ID)
 
 
 def dakala(student, config: dict):
@@ -261,10 +270,12 @@ def dakala(student, config: dict):
                 STU_ID,
                 f'打卡失败,没有找到今天的打卡链接,时间为{datetime.now().strftime("%Y/%m/%d")}，请检查教务处密码是否错误',
             )
+            push_daka_error_msg(STU_ID)
     except Exception as e:
         daka_logger.warn(f"{STU_ID}打卡发生了错误")
         daka_logger.warn(e)
         userdb.db_put_dk_callback_info(STU_ID, "打卡系统发生错误,请及时联系作者")
+        push_daka_error_msg(STU_ID)
     finally:
         driver.quit()
         daka_logger.debug(f"{STU_ID}打卡结束，浏览器退出")

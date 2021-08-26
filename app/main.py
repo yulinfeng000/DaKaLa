@@ -17,7 +17,7 @@ from app.service.daka import dakala
 from app.service.record import dkrecords
 from app.config import APP_ADMIN_KEY, APP_SECRET_KEY
 import app.userdb as userdb
-
+from flask import render_template
 
 app = Flask(__name__)
 
@@ -333,6 +333,37 @@ def reflush_dk_record(stuid):
     userdb.db_put_user_reflush_daka_record_time(stuid, datetime.now())
     thread_pool.submit(dkrecords, student)
     return jsonify({"msg": "刷新成功", "code": 200, "records": records, "combo": combo})
+
+
+@app.route("/stu/<stuid>/dknotify", methods=["POST"])
+@jwt_required()
+def set_push_setting(stuid):
+    if not safe_str_cmp(stuid, current_user["stuid"]):
+        return jsonify({"msg": "不允许访问", "code": 401})
+    required = ["push_type", "key"]
+    rf = request.json
+    if not rf or not all(k in rf for k in required):
+        return jsonify({"msg": "必要信息缺失", "code": 403})
+    ptype = rf.get("push_type", None)
+    key = rf.get("key", None)
+    userdb.db_put_push_type(stuid, ptype)
+    if ptype == "serverchan":
+        userdb.db_put_server_chan_key(stuid, key)
+    elif ptype == "qmsg":
+        userdb.db_put_qmsg_key(stuid, key)
+    elif ptype == "email":
+        userdb.db_put_user_email(stuid, key)
+    return jsonify({"code": 200, "msg": "设置成功", "push_type": ptype, "key": key})
+
+
+@app.route("/stu/<stuid>/dknotify/info", methods=["POST"])
+@jwt_required()
+def push_setting_info(stuid):
+    if not safe_str_cmp(stuid, current_user["stuid"]):
+        return jsonify({"msg": "不允许访问", "code": 401})
+    ptype = userdb.db_get_push_type(stuid)
+    key = userdb.db_get_push_key_by_type(stuid, ptype)
+    return jsonify({"msg": "查询成功", "key": key, "ptype": ptype, "code": 200})
 
 
 @app.route("/admin/daka/all", methods=["GET"])

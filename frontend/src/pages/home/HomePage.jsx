@@ -34,6 +34,10 @@ function HomePage() {
       <WhiteSpace />
       <Button onClick={() => history.push("/app/conf")}>查看/修改配置</Button>
       <WhiteSpace />
+      <Button onClick={() => history.push("/app/notify")}>
+        打卡推送通知设置
+      </Button>
+      <WhiteSpace />
       <Button
         onClick={() => {
           Modal.alert("退出确认", "确认退出？", [

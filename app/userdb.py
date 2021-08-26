@@ -24,6 +24,10 @@ DAKA_TRIGGER = "DAKA_TRIGGER_"
 DAKA_COMBO = "DAKA_COMBO_"
 DAKA_RECORDS = "DAKA_RECORDS_"
 LAST_DAKA_REFLUSH_RECORDS_TIME = "LAST_DAKA_REFLUSH_RECORDS_TIME_"
+QMSG_CHAN_KEY = "QMSG_KEY_"
+SERVER_CHAN_KEY = "SERVER_CHAN_KEY_"
+USER_EMAIL = "USER_EMAIL_"
+PUSH_TYPE = "PUSH_TYPE_"
 
 
 class DBA:
@@ -69,6 +73,8 @@ def put_object(key, value):
 
 
 def put_value(key, value):
+    if value is None:
+        return  # 没法转换None
     with dba as db:
         db.put(KEY(key), VALUE(value))
 
@@ -188,3 +194,49 @@ def db_get_user_relfush_daka_record_time(stuid):
     if not v:
         return 0
     return int(v)
+
+
+def db_get_qmsg_key(stuid):
+    return get_value(f"{QMSG_CHAN_KEY}{stuid}")
+
+
+def db_put_qmsg_key(stuid, key):
+    put_value(f"{QMSG_CHAN_KEY}{stuid}", key)
+
+
+def db_put_server_chan_key(stuid, key):
+    put_value(f"{SERVER_CHAN_KEY}{stuid}", key)
+
+
+def db_get_server_chan_key(stuid):
+    return get_value(f"{SERVER_CHAN_KEY}{stuid}")
+
+
+def db_put_user_email(stuid, email):
+    put_value(f"{USER_EMAIL}{stuid}", email)
+
+
+def db_get_user_email(stuid):
+    return get_value(f"{USER_EMAIL}{stuid}")
+
+
+def db_put_push_type(stuid, tp):
+    put_value(f"{PUSH_TYPE}{stuid}", tp)
+
+
+def db_get_push_type(stuid):
+    v = get_value(f"{PUSH_TYPE}{stuid}")
+    if not v or v == "" or v == "None":
+        return None
+    return v
+
+
+def db_get_push_key_by_type(stuid, ptype):
+    if ptype == "qmsg":
+        return db_get_qmsg_key(stuid)
+    elif ptype == "serverchan":
+        return db_get_server_chan_key(stuid)
+    elif ptype == "email":
+        return db_get_user_email(stuid)
+    else:
+        return None

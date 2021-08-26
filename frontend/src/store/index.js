@@ -58,3 +58,28 @@ export const dakaInfo = observable.box(null)
 export const dakaCombo = observable.box(null)
 
 export const dakaRecords = observable.array([])
+
+export const pushKey = observable.box(null)
+
+export const pushType = observable.box(null)
+
+export const qmsgKey = computed(() => {
+  if (pushType.get() === "qmsg") {
+    return pushKey.get()
+  }
+  return null
+})
+
+export const serverchanKey = computed(() => {
+  if (pushType.get() === "serverchan") {
+    return pushKey.get()
+  }
+  return null
+})
+
+export const emailKey = computed(() => {
+  if (pushType.get() === "email") {
+    return pushKey.get()
+  }
+  return null
+})

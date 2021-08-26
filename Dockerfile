@@ -12,6 +12,16 @@ ENV APP_SECRET_KEY='123456'
 
 ENV APP_ADMIN_KEY=''
 
+ENV APP_STMP_ENABLE=
+
+ENV APP_STMP_SERVER=''
+
+ENV APP_STMP_PWD=''
+
+ENV APP_STMP_USER=''
+
+ENV APP_URL = ""
+
 RUN mkdir -p /dakala/app
 
 RUN mkdir -p /dakala/data/log

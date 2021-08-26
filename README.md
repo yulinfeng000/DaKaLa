@@ -8,7 +8,17 @@
 
 > 成都信息工程大学疫情打卡解决器，每天为你自动打卡
 
-每天重复的工作很快会燃烧自己对生活的热情，本项目旨在帮兄弟萌燃起对生活的热情 2333
+每天重复的工作很快会燃烧自己对生活的热情，本项目旨在帮兄弟萌燃起对生活的热情 2333，功能包含如下：
+
+- 每日自动打卡
+
+- 手动打卡
+
+- 打卡后截图
+
+- 打卡失败推送
+
+- 自动申请出校
 
 ## 推荐 Docker 运行
 
@@ -30,30 +40,30 @@
   docker-compose.yml 文件内容
   请不要拆分该文件分别启动镜像
 
-      ```yaml
-      services:
-        dakala:
-            container_name: dakala
-            image: yulinfeng/dakala2:1.9.6
-            init: true
-            environment:
-                APP_SECRET_KEY:  # jwt 密钥
-                APP_ADMIN_KEY:  # 管理员 密钥
-                TZ: "Asia/Shanghai" # 时区 请不要修改
-            volumes:
-                - ./data:/dakala/data # 容器数据挂载到当前目录下的data文件夹下
-            ports:
-                - 8000:8000
-        frontend:
-            image: yulinfeng/dakala2-frontend:uni-1.2
-            container_name: dk2f
-            environment:
-            	REACT_APP_BASE_URL: https://api.xxx.com # 你的服务器地址
-            ports:
-              - 5000:5000
-            depends_on:
-              - dakala
-      ```
+  ```yaml
+  services:
+    dakala:
+      container_name: dakala
+      image: yulinfeng/dakala2:1.9.7
+      init: true
+      environment:
+        APP_SECRET_KEY: # jwt 密钥
+        APP_ADMIN_KEY: # 管理员 密钥
+        TZ: "Asia/Shanghai" # 时区 请不要修改
+      volumes:
+        - ./data:/dakala/data # 容器数据挂载到当前目录下的data文件夹下
+      ports:
+        - 8000:8000
+    frontend:
+      image: yulinfeng/dakala2-frontend:uni-1.3
+      container_name: dk2f
+      environment:
+        REACT_APP_BASE_URL: https://api.xxx.com # 你的服务器地址
+      ports:
+        - 5000:5000
+      depends_on:
+        - dakala
+  ```
 
   执行`docker-compose up -d`启动容器
 
