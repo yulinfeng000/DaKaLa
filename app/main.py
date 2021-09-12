@@ -1,3 +1,4 @@
+from app.service.photo import get_photo
 from datetime import timedelta, datetime
 from flask_apscheduler import APScheduler
 from apscheduler.schedulers.gevent import GeventScheduler
@@ -65,6 +66,8 @@ app.config.from_object(SchedulerConfig())
 
 
 SCHEDULE_LOCK_FILE = os.path.abspath("./data/db/schedule.lock")
+if os.path.exists(SCHEDULE_LOCK_FILE):
+    os.remove(SCHEDULE_LOCK_FILE)
 app.logger.info(f"锁文件位置: {SCHEDULE_LOCK_FILE}")
 
 
@@ -377,6 +380,17 @@ def admin_daka_for_all():
         return jsonify({"msg": "拒绝访问", "code": 401})
     app.logger.info(f'admin daka exec {datetime.now().strftime("%Y/%m/%d")}')
     thread_pool.submit(daka_worker)
+    return jsonify({"msg": "执行成功", "code": 200})
+
+
+@app.route("/stu/<stuid>/dkphoto/reflush",methods=["POST"])
+@jwt_required()
+def reflush_dk_photo(stuid):
+    if not safe_str_cmp(stuid, current_user["stuid"]):
+        return jsonify({"msg": "不允许访问", "code": 401})
+    app.logger.info(f'{stuid}执行了刷新截图 {datetime.now().strftime("%Y/%m/%d")}')
+    student = userdb.db_get_user_by_stuid(stuid)
+    thread_pool.submit(get_photo, student)
     return jsonify({"msg": "执行成功", "code": 200})
 
 

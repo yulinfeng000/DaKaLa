@@ -1,4 +1,4 @@
-import { Icon, NavBar, TabBar } from "antd-mobile"
+import { ActivityIndicator, Icon, NavBar, TabBar } from "antd-mobile"
 import { observable, runInAction } from "mobx"
 import { observer } from "mobx-react-lite"
 import { useHistory } from "react-router-dom"
@@ -9,11 +9,16 @@ import { usePushSetting } from "../../lib/hook"
 
 export const selectd = observable.box("")
 function NotifySettingPage() {
-  usePushSetting()
-
+  const { loading } = usePushSetting()
   const history = useHistory()
+
   return (
     <>
+      <ActivityIndicator
+        toast
+        animating={loading.get()}
+        text="加载推送配置中..."
+      />
       <NavBar
         icon={<Icon type="left" />}
         onLeftClick={() => history.push("/app/home")}

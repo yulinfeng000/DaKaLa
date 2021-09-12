@@ -10,7 +10,6 @@ from selenium.webdriver.common.keys import Keys
 
 from selenium.webdriver.support import expected_conditions as EC
 from app.service.push import push_msg_to_user
-from app.config import APP_URL
 import logging
 
 daka_logger = logging.getLogger("gunicorn.error")
@@ -136,7 +135,7 @@ def dakaing(link, driver, student, config):
         try:
             alert_window = driver.switch_to.alert
             alert_window.accept()
-        except NoAlertPresentException as e:
+        except NoAlertPresentException or NoSuchElementException as e:
             daka_logger.warn(
                 f'学号: {STU_ID},确认窗口未弹出，当前时间为: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
             )

@@ -17,7 +17,6 @@ function LoginPage() {
   const [stuid, setStuId] = useState('')
   const [password, setPasswd] = useState('')
   const handleLoginBtnClick = () => {
-    console.log('do it do it')
     Axios.post('/stu/login', { stuid, password })
       .then((resp) => {
         console.log(resp)
@@ -48,7 +47,7 @@ function LoginPage() {
 
   return (
     <>
-      <NavBar>登录</NavBar>
+    <NavBar>登录</NavBar>
       <List renderHeader={() => '基本信息'}>
         <InputItem
           key="0"

@@ -83,3 +83,5 @@ export const emailKey = computed(() => {
   }
   return null
 })
+
+export const pushSettingLoading = observable.box(true)

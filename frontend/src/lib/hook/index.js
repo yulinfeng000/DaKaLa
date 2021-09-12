@@ -1,8 +1,7 @@
 import { runInAction } from "mobx"
-import { useEffect } from "react"
 import useSWR from "swr"
 import { selectd } from "../../pages/notify/NotifySettingPage"
-import { pushKey, pushType } from "../../store"
+import { pushKey, pushSettingLoading, pushType } from "../../store"
 import Axios from "../axios"
 import { getItem } from "../storage"
 
@@ -44,17 +43,15 @@ export const useDakaRecords = () => {
 
 export const usePushSetting = () => {
   const student = getItem("student")
-
-  useEffect(() => {
-    ;(async () => {
-      const resp = await Axios.post(`/stu/${student.stuid}/dknotify/info`)
-      runInAction(() => {
-        pushKey.set(resp.key)
-        pushType.set(resp.ptype)
-        console.log(resp)
-        selectd.set(resp.ptype ? resp.ptype : "")
-      })
-    })()
-  }, [student.stuid])
-  return { pushKey, pushType }
+  useSWR(`/stu/${student.stuid}/dknotify/info`, async (url) => {
+    const resp = await Axios.post(url)
+    runInAction(() => {
+      pushKey.set(resp.key)
+      pushType.set(resp.ptype)
+      console.log(resp)
+      selectd.set(resp.ptype ? resp.ptype : "")
+      pushSettingLoading.set(false)
+    })
+  })
+  return { pushKey, pushType, loading: pushSettingLoading }
 }
